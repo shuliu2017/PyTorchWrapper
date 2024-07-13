@@ -64,7 +64,7 @@ def create_writer(experiment_name: str, model_name: str, extra: str = '') -> Sum
 
     return SummaryWriter(log_dir=log_dir)
 
-  def save_model_state(model: torch.nn.Module, target_dir: str, model_name: str):
+def save_model_state(model: torch.nn.Module, target_dir: str, model_name: str):
     """
     Saves the PyTorch model's state dictionary.
 
