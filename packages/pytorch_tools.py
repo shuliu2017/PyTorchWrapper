@@ -64,3 +64,55 @@ def create_writer(experiment_name: str, model_name: str, extra: str = '') -> Sum
 
     return SummaryWriter(log_dir=log_dir)
 
+  def save_model_state(model: torch.nn.Module, target_dir: str, model_name: str):
+    """
+    Saves the PyTorch model's state dictionary.
+
+    Args:
+        model (torch.nn.Module): The model to be saved.
+        target_dir (str): The directory path where the model will be saved.
+        model_name (str): The filename for the saved model (should end with .pth or .pt).
+
+    Returns:
+        None
+    """
+    # Ensure the directory exists
+    if not os.path.exists(target_dir):
+        os.makedirs(target_dir)
+
+    # Ensure the model_name ends with .pth or .pt
+    assert model_name.endswith(".pth") or model_name.endswith(".pt"), "model_name should end with .pth or .pt"
+
+    # Create the full path
+    full_path = os.path.join(target_dir, model_name)
+
+    # Save the model state dictionary
+    torch.save(obj=model.state_dict(), f=full_path)
+
+    print(f"Model state saved to {full_path}")
+
+
+
+def load_model_state(model: torch.nn.Module, target_dir: str, model_name: str):
+    """
+    Loads the PyTorch model's state dictionary.
+
+    Args:
+        model (torch.nn.Module): The model to load the state dictionary into.
+        target_dir (str): The directory path where the model is saved.
+        model_name (str): The filename for the saved model (should end with .pth or .pt).
+
+    Returns:
+        None
+    """
+    # Ensure the model_name ends with .pth or .pt
+    assert model_name.endswith(".pth") or model_name.endswith(".pt"), "model_name should end with .pth or .pt"
+
+    # Create the full path
+    full_path = os.path.join(target_dir, model_name)
+
+    # Load the state dictionary
+    model.load_state_dict(torch.load(full_path))
+
+    print(f"Model state loaded from {full_path}")
+    
