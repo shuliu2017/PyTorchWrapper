@@ -2,8 +2,9 @@ import os
 from datetime import datetime
 import numpy as np
 import torch
+from torchvision import datasets, transforms
+from torch.utils.data import DataLoader
 from torch.utils.tensorboard import SummaryWriter
-
 
 def get_device() -> torch.device:
     """
@@ -26,6 +27,27 @@ def set_random_seed(seed: int=0):
     np.random.seed(seed)
     torch.manual_seed(seed)
     torch.cuda.manual_seed(seed)
+
+def create_image_classification_dataloader(data_dir: str, transform: transforms = transforms.ToTensor, 
+                      batch_size: int = 32, shuffle: bool = True, num_workers: int = 0) -> DataLoader:
+    """
+    Creates a DataLoader for image classification tasks.
+
+    Args:
+        data_dir (str): The directory where the image data is stored.
+        transform (transforms, optional): Transformations to apply to the images. Defaults to transforms.ToTensor.
+        batch_size (int, optional): Number of samples per batch to load. Defaults to 32.
+        shuffle (bool, optional): Whether to shuffle the data at every epoch. Defaults to True.
+        num_workers (int, optional): How many subprocesses to use for data loading. Defaults to 0.
+
+    Returns:
+        DataLoader: A DataLoader object for the dataset.
+        list: A list of class names corresponding to the folders in the dataset directory.
+    """
+    data = datasets.ImageFolder(data_dir, transform=transform)
+    class_names = data.classes
+    dataloader = DataLoader(data, batch_size=batch_size, shuffle=shuffle, num_workers=num_workers)
+    return dataloader, class_names
 
 
 def freeze_base_layers(model: torch.nn.Module):
