@@ -37,7 +37,8 @@ def split_and_save_dataset(dataset_path, train_path, test_path, test_size=0.2, r
 
 if __name__ == '__main__':
 
-    # https://www.kaggle.com/datasets/shrutisaxena/yoga-pose-image-classification-dataset
+    # dataset:
+    #    https://www.kaggle.com/datasets/shrutisaxena/yoga-pose-image-classification-dataset
 
     drive.mount('/content/drive')
     dataset_path = '/content/drive/My Drive/dataset/yoga_pose'
