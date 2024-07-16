@@ -3,8 +3,13 @@ from tqdm.auto import tqdm
 import torch
 from torch.utils.data import DataLoader
 from sklearn.metrics import precision_score, recall_score, f1_score
+from typing import Optional
 
-def train_step(model: torch.nn.Module, dataloader: DataLoader, loss_fn: torch.nn.Module, optimizer: torch.optim.Optimizer, device: torch.device):
+def train_step(model: torch.nn.Module,
+               dataloader: DataLoader,
+               loss_fn: torch.nn.Module,
+               optimizer: torch.optim.Optimizer,
+               device: torch.device):
     """
     Performs a single training step for the given model.
 
@@ -112,6 +117,47 @@ def evaluation_step(model: torch.nn.Module, dataloader: DataLoader, loss_fn: tor
     
     return metrics
 
+class EarlyStopping:
+    def __init__(self, patience=8, verbose=True, delta=0, path='early_stopping_checkpoint.pt'):
+        """
+        Args:
+            patience (int): How long to wait after last time validation loss improved.
+                            Default: 8
+            verbose (bool): If True, prints a message for each validation loss improvement.
+                            Default: True
+            delta (float): Minimum change in the monitored quantity to qualify as an improvement.
+                            Default: 0
+            path (str): Path for the checkpoint to be saved to.
+                            Default: 'early_stopping_checkpoint.pt'
+        """
+        self.patience = patience
+        self.verbose = verbose
+        self.counter = 0
+        self.best_loss = None
+        self.early_stop = False
+        self.delta = delta
+        self.path = path
+
+    def __call__(self, val_loss, model):
+
+        if self.best_loss is None:
+            self.best_loss = val_loss
+            if self.verbose:
+                print(f'Initial Validation loss ({val_loss:.6f}).  Saving model ...')
+            torch.save(model.state_dict(), self.path)
+        elif val_loss > self.best_loss + self.delta:
+            self.counter += 1
+            if self.verbose:
+                print(f'EarlyStopping counter: {self.counter} out of {self.patience}')
+            if self.counter >= self.patience:
+                self.early_stop = True
+        else:
+            if self.verbose:
+                print(f'Validation loss decreased ({self.best_loss:.6f} --> {val_loss:.6f}).  Saving model ...')
+            self.best_loss = val_loss
+            torch.save(model.state_dict(), self.path)
+            self.counter = 0
+
 def train(model: torch.nn.Module,
           train_dataloader: torch.utils.data.DataLoader,
           test_dataloader: torch.utils.data.DataLoader,
@@ -119,6 +165,7 @@ def train(model: torch.nn.Module,
           loss_fn: torch.nn.Module,
           epochs: int,
           device: torch.device,
+          early_stopping: Optional[EarlyStopping] = None,
           writer: torch.utils.tensorboard.writer.SummaryWriter = None
           ) -> pd.DataFrame:
 
@@ -152,9 +199,13 @@ def train(model: torch.nn.Module,
         valid_metric = pd.DataFrame([valid_metric])
         train_metrics = pd.concat([train_metrics, train_metric], ignore_index=True)
         valid_metrics = pd.concat([valid_metrics, valid_metric], ignore_index=True)
+        
+        if early_stopping is not None:
+            early_stopping(valid_metric['loss'], model)
+            if early_stopping.early_stop:
+                print("Early stopping")
+                break
 
     results = pd.merge(train_metrics, valid_metrics, on="epoch", suffixes=['train', 'valid'])
 
     return results
-
-
