@@ -2,14 +2,14 @@ import pandas as pd
 from tqdm.auto import tqdm
 import torch
 from torch.utils.data import DataLoader
-from sklearn.metrics import precision_score, recall_score, f1_score
 from typing import Optional
 
 def train_step(model: torch.nn.Module,
                dataloader: DataLoader,
                loss_fn: torch.nn.Module,
                optimizer: torch.optim.Optimizer,
-               device: torch.device):
+               device: torch.device,
+               metrics: dict):
     """
     Performs a single training step for the given model.
 
@@ -22,6 +22,10 @@ def train_step(model: torch.nn.Module,
         loss_fn (torch.nn.Module): The loss function used to compute the loss.
         optimizer (torch.optim.Optimizer): The optimizer used to update the model parameters.
         device (torch.device): The device to perform computations on (e.g., 'cpu' or 'cuda').
+        metrics (dict): A dictionary containing the metric names, functions, and parameters.
+            e.g. classification_metrics = {
+              'accuracy': (accuracy_score, {}),
+              'precision': (precision_score, {'average': 'weighted'})}
 
     Returns:
         dict: A dictionary containing the average loss, accuracy, precision, recall, and F1-score.
@@ -49,23 +53,19 @@ def train_step(model: torch.nn.Module,
         all_preds.extend(preds.cpu().numpy())
     
     avg_loss = train_loss / num_batches
-    accuracy = (torch.tensor(all_preds) == torch.tensor(all_targets)).sum().item() / len(all_targets)
-    precision = precision_score(all_targets, all_preds, average='weighted')
-    recall = recall_score(all_targets, all_preds, average='weighted')
-    f1 = f1_score(all_targets, all_preds, average='weighted')
+    scores = {'loss': avg_loss}
+
+    for metric_name, (metric_fn, metric_params) in metrics.items():
+        scores[metric_name] = metric_fn(all_targets, all_preds, **metric_params)
     
-    metrics = {
-        'loss': avg_loss,
-        'accuracy': accuracy,
-        'precision': precision,
-        'recall': recall,
-        'f1_score': f1
-    }
-    
-    return metrics
+    return scores
 
 
-def evaluation_step(model: torch.nn.Module, dataloader: DataLoader, loss_fn: torch.nn.Module, device: torch.device):
+def evaluation_step(model: torch.nn.Module,
+                    dataloader: DataLoader,
+                    loss_fn: torch.nn.Module,
+                    device: torch.device,
+                    metrics: dict):
     """
     Performs a single evaluation step for the given model.
 
@@ -77,6 +77,10 @@ def evaluation_step(model: torch.nn.Module, dataloader: DataLoader, loss_fn: tor
         dataloader (DataLoader): The DataLoader providing the validation data.
         loss_fn (torch.nn.Module): The loss function used to compute the loss.
         device (torch.device): The device to perform computations on (e.g., 'cpu' or 'cuda').
+        metrics (dict): A dictionary containing the metric names, functions, and parameters.
+            e.g. classification_metrics = {
+              'accuracy': (accuracy_score, {}),
+              'precision': (precision_score, {'average': 'weighted'})}
 
     Returns:
         dict: A dictionary containing the average loss, accuracy, precision, recall, and F1-score.
@@ -102,20 +106,12 @@ def evaluation_step(model: torch.nn.Module, dataloader: DataLoader, loss_fn: tor
             all_preds.extend(preds.cpu().numpy())
     
     avg_loss = val_loss / num_batches
-    accuracy = (torch.tensor(all_preds) == torch.tensor(all_targets)).sum().item() / len(all_targets)
-    precision = precision_score(all_targets, all_preds, average='weighted')
-    recall = recall_score(all_targets, all_preds, average='weighted')
-    f1 = f1_score(all_targets, all_preds, average='weighted')
+    scores = {'loss': avg_loss}
+
+    for metric_name, (metric_fn, metric_params) in metrics.items():
+        scores[metric_name] = metric_fn(all_targets, all_preds, **metric_params)
     
-    metrics = {
-        'loss': avg_loss,
-        'accuracy': accuracy,
-        'precision': precision,
-        'recall': recall,
-        'f1_score': f1
-    }
-    
-    return metrics
+    return scores
 
 class EarlyStopping:
     def __init__(self, patience=8, verbose=True, delta=0, path='early_stopping_checkpoint.pt'):
@@ -165,47 +161,52 @@ def train(model: torch.nn.Module,
           loss_fn: torch.nn.Module,
           epochs: int,
           device: torch.device,
+          metrics: dict,
           early_stopping: Optional[EarlyStopping] = None,
           writer: torch.utils.tensorboard.writer.SummaryWriter = None
           ) -> pd.DataFrame:
 
-    train_metrics = pd.DataFrame()
-    valid_metrics = pd.DataFrame()
+    train_scores = pd.DataFrame()
+    valid_scores = pd.DataFrame()
 
     for epoch in tqdm(range(epochs)):
-        train_metric = train_step(model=model,
+        train_score = train_step(model=model,
                                         dataloader=train_dataloader,
                                         loss_fn=loss_fn,
                                         optimizer=optimizer,
-                                        device=device)
-        valid_metric = evaluation_step(model=model,
+                                        device=device,
+                                        metrics=metrics)
+        valid_score = evaluation_step(model=model,
                                        dataloader=test_dataloader,
                                        loss_fn=loss_fn,
-                                       device=device)
+                                       device=device,
+                                       metrics=metrics)
  
         if writer:
-            for key in train_metric.keys():
-                writer.add_scalars(main_tag=key,
-                               tag_scalar_dict={f"{key}_train": train_metric[key],
-                                                "{key}_valid": valid_metric[key]},
-                               global_step=epoch +1)
+            for key in train_score.keys():
+                writer.add_scalars(
+                    main_tag=key,
+                    tag_scalar_dict={f"{key}_train": train_score[key],
+                                    "{key}_valid": valid_score[key]},
+                    global_step=epoch +1
+                    )
 
             writer.close()
 
-        train_metric['epoch'] = epoch + 1
-        valid_metric['epoch'] = epoch + 1
+        train_score['epoch'] = epoch + 1
+        valid_score['epoch'] = epoch + 1
 
-        train_metric_df = pd.DataFrame([train_metric])
-        valid_metric_df = pd.DataFrame([valid_metric])
-        train_metrics = pd.concat([train_metrics, train_metric_df], ignore_index=True)
-        valid_metrics = pd.concat([valid_metrics, valid_metric_df], ignore_index=True)
+        train_score_df = pd.DataFrame([train_score])
+        valid_score_df = pd.DataFrame([valid_score])
+        train_scores = pd.concat([train_scores, train_score_df], ignore_index=True)
+        valid_scores = pd.concat([valid_scores, valid_score_df], ignore_index=True)
         
         if early_stopping is not None:
-            early_stopping(valid_metric['loss'], model)
+            early_stopping(valid_score['loss'], model)
             if early_stopping.early_stop:
                 print("Early stopping")
                 break
 
-    results = pd.merge(train_metrics, valid_metrics, on="epoch", suffixes=['train', 'valid'])
+    results = pd.merge(train_scores, valid_scores, on="epoch", suffixes=['train', 'valid'])
 
     return results
