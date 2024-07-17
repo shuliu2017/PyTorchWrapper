@@ -81,7 +81,7 @@ def evaluation_step(model: torch.nn.Module,
         metrics (dict): A dictionary containing the metric names, functions, and parameters.
             e.g. classification_metrics = {
               'accuracy': (accuracy_score, {}),
-              'precision': (precision_score, {'average': 'weighted'})}
+              'precision': (precision_score, {'average': 'weighted'})}.
         device (torch.device): The device to perform computations on (e.g., 'cpu' or 'cuda').
         
     Returns:
@@ -209,6 +209,6 @@ def train(model: torch.nn.Module,
                 print("Early stopping")
                 break
 
-    results = pd.merge(train_scores, valid_scores, on="epoch", suffixes=['train', 'valid'])
+    results = pd.merge(train_scores, valid_scores, on="epoch", suffixes=['_train', '_valid'])
 
     return results
