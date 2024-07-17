@@ -195,10 +195,10 @@ def train(model: torch.nn.Module,
         train_metric['epoch'] = epoch + 1
         valid_metric['epoch'] = epoch + 1
 
-        train_metric = pd.DataFrame([train_metric])
-        valid_metric = pd.DataFrame([valid_metric])
-        train_metrics = pd.concat([train_metrics, train_metric], ignore_index=True)
-        valid_metrics = pd.concat([valid_metrics, valid_metric], ignore_index=True)
+        train_metric_df = pd.DataFrame([train_metric])
+        valid_metric_df = pd.DataFrame([valid_metric])
+        train_metrics = pd.concat([train_metrics, train_metric_df], ignore_index=True)
+        valid_metrics = pd.concat([valid_metrics, valid_metric_df], ignore_index=True)
         
         if early_stopping is not None:
             early_stopping(valid_metric['loss'], model)
