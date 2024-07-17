@@ -2,6 +2,7 @@ import pandas as pd
 from tqdm.auto import tqdm
 import torch
 from torch.utils.data import DataLoader
+from torch.utils import tensorboard
 from typing import Optional
 
 def train_step(model: torch.nn.Module,
@@ -164,8 +165,8 @@ def train(model: torch.nn.Module,
           metrics: dict,
           epochs: int,
           early_stopping: Optional[EarlyStopping] = None,
-          device: torch.device,
-          writer: torch.utils.tensorboard.writer.SummaryWriter = None
+          device: torch.device = 'cpu',
+          writer: tensorboard.writer.SummaryWriter = None
           ) -> pd.DataFrame:
 
     train_scores = pd.DataFrame()
