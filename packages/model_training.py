@@ -8,8 +8,9 @@ def train_step(model: torch.nn.Module,
                dataloader: DataLoader,
                loss_fn: torch.nn.Module,
                optimizer: torch.optim.Optimizer,
-               device: torch.device,
-               metrics: dict):
+               metrics: dict,
+               device: torch.device
+               ):
     """
     Performs a single training step for the given model.
 
@@ -21,12 +22,12 @@ def train_step(model: torch.nn.Module,
         dataloader (DataLoader): The DataLoader providing the training data.
         loss_fn (torch.nn.Module): The loss function used to compute the loss.
         optimizer (torch.optim.Optimizer): The optimizer used to update the model parameters.
-        device (torch.device): The device to perform computations on (e.g., 'cpu' or 'cuda').
         metrics (dict): A dictionary containing the metric names, functions, and parameters.
             e.g. classification_metrics = {
               'accuracy': (accuracy_score, {}),
-              'precision': (precision_score, {'average': 'weighted'})}
-
+              'precision': (precision_score, {'average': 'weighted'})}.
+        device (torch.device): The device to perform computations on (e.g., 'cpu' or 'cuda').
+        
     Returns:
         dict: A dictionary containing the average loss, accuracy, precision, recall, and F1-score.
     """
@@ -64,8 +65,9 @@ def train_step(model: torch.nn.Module,
 def evaluation_step(model: torch.nn.Module,
                     dataloader: DataLoader,
                     loss_fn: torch.nn.Module,
-                    device: torch.device,
-                    metrics: dict):
+                    metrics: dict,
+                    device: torch.device
+                   ):
     """
     Performs a single evaluation step for the given model.
 
@@ -76,12 +78,12 @@ def evaluation_step(model: torch.nn.Module,
         model (torch.nn.Module): The model to be evaluated.
         dataloader (DataLoader): The DataLoader providing the validation data.
         loss_fn (torch.nn.Module): The loss function used to compute the loss.
-        device (torch.device): The device to perform computations on (e.g., 'cpu' or 'cuda').
         metrics (dict): A dictionary containing the metric names, functions, and parameters.
             e.g. classification_metrics = {
               'accuracy': (accuracy_score, {}),
               'precision': (precision_score, {'average': 'weighted'})}
-
+        device (torch.device): The device to perform computations on (e.g., 'cpu' or 'cuda').
+        
     Returns:
         dict: A dictionary containing the average loss, accuracy, precision, recall, and F1-score.
     """
@@ -159,10 +161,10 @@ def train(model: torch.nn.Module,
           test_dataloader: torch.utils.data.DataLoader,
           optimizer: torch.optim.Optimizer,
           loss_fn: torch.nn.Module,
-          epochs: int,
-          device: torch.device,
           metrics: dict,
+          epochs: int,
           early_stopping: Optional[EarlyStopping] = None,
+          device: torch.device,
           writer: torch.utils.tensorboard.writer.SummaryWriter = None
           ) -> pd.DataFrame:
 
