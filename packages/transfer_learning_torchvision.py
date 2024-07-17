@@ -77,3 +77,19 @@ def initialize_effnetv2s(out_features: int = 8,
     model = model.to(device)
 
     return model
+
+def initialize_model(model_name):
+    """Available model names: EfficientNet_B2, EfficientNet_V2_S
+    """
+    if model_name == "EfficientNet_B2":
+      model = initialize_effnetb2(
+          out_features=len(class_names)
+      )
+    elif model_name == "EfficientNet_V2_S":
+        model = initialize_effnetv2s(
+            out_features=len(class_names)
+        )
+    else:
+        raise ValueError("Invalid model name.")
+
+    return model
