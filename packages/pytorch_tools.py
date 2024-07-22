@@ -52,7 +52,7 @@ def enable_multi_gpu(model: torch.nn.Module, verbose: bool = True) -> torch.nn.M
         if verbose:
             print(f"(◕‿◕✿) Using {torch.cuda.device_count()} GPUs.")
         if torch.cuda.device_count() > 1:
-            return nn.DataParallel(model)
+            return torch.nn.DataParallel(model)
         else:
             return model
 
