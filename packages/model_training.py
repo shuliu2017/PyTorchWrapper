@@ -9,7 +9,7 @@ def train_step(model: torch.nn.Module,
                dataloader: DataLoader,
                loss_fn: torch.nn.Module,
                optimizer: torch.optim.Optimizer,
-               Optional[Dict[str, Tuple[Callable, Dict]]],
+               metrics: Optional[Dict[str, Tuple[Callable, Dict]]],
                device: torch.device
                ):
     """
