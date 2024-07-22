@@ -3,13 +3,13 @@ from tqdm.auto import tqdm
 import torch
 from torch.utils.data import DataLoader
 from torch.utils import tensorboard
-from typing import Optional
+from typing import Optional, Dict, Callable, Tuple
 
 def train_step(model: torch.nn.Module,
                dataloader: DataLoader,
                loss_fn: torch.nn.Module,
                optimizer: torch.optim.Optimizer,
-               metrics: Optional[dict],
+               Optional[Dict[str, Tuple[Callable, dict]]],
                device: torch.device
                ):
     """
@@ -23,10 +23,11 @@ def train_step(model: torch.nn.Module,
         dataloader (DataLoader): The DataLoader providing the training data.
         loss_fn (torch.nn.Module): The loss function used to compute the loss.
         optimizer (torch.optim.Optimizer): The optimizer used to update the model parameters.
-        metrics (dict): A dictionary containing the metric names, functions, and parameters.
+        metrics (Optional[Dict[str, Tuple[Callable, dict]]]): A dictionary containing the metric names,
+            functions, and parameters. The functions should accept two arguments: true labels and predictions.
             e.g. classification_metrics = {
-              'accuracy': (accuracy_score, {}),
-              'precision': (precision_score, {'average': 'weighted'})}.
+                'accuracy': (accuracy_score, {}),
+                'precision': (precision_score, {'average': 'weighted'})}.
         device (torch.device): The device to perform computations on (e.g., 'cpu' or 'cuda').
         
     Returns:
@@ -67,7 +68,7 @@ def train_step(model: torch.nn.Module,
 def evaluation_step(model: torch.nn.Module,
                     dataloader: DataLoader,
                     loss_fn: torch.nn.Module,
-                    metrics: Optional[dict],
+                    metrics: Optional[Dict[str, Tuple[Callable, dict]]],
                     device: torch.device
                    ):
     """
@@ -80,10 +81,11 @@ def evaluation_step(model: torch.nn.Module,
         model (torch.nn.Module): The model to be evaluated.
         dataloader (DataLoader): The DataLoader providing the validation data.
         loss_fn (torch.nn.Module): The loss function used to compute the loss.
-        metrics (dict): A dictionary containing the metric names, functions, and parameters.
+        metrics (Optional[Dict[str, Tuple[Callable, dict]]]): A dictionary containing the metric names,
+            functions, and parameters. The functions should accept two arguments: true labels and predictions.
             e.g. classification_metrics = {
-              'accuracy': (accuracy_score, {}),
-              'precision': (precision_score, {'average': 'weighted'})}.
+                'accuracy': (accuracy_score, {}),
+                'precision': (precision_score, {'average': 'weighted'})}.
         device (torch.device): The device to perform computations on (e.g., 'cpu' or 'cuda').
         
     Returns:
