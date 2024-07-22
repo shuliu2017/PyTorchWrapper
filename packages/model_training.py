@@ -159,7 +159,7 @@ class EarlyStopping:
 
 def train(model: torch.nn.Module,
           train_dataloader: torch.utils.data.DataLoader,
-          test_dataloader: torch.utils.data.DataLoader,
+          validation_dataloader: torch.utils.data.DataLoader,
           optimizer: torch.optim.Optimizer,
           loss_fn: torch.nn.Module,
           metrics: dict,
@@ -180,7 +180,7 @@ def train(model: torch.nn.Module,
                                         device=device,
                                         metrics=metrics)
         valid_score = evaluation_step(model=model,
-                                       dataloader=test_dataloader,
+                                       dataloader=validation_dataloader,
                                        loss_fn=loss_fn,
                                        device=device,
                                        metrics=metrics)
