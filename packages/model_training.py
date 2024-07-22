@@ -10,6 +10,7 @@ def train_step(model: torch.nn.Module,
                loss_fn: torch.nn.Module,
                optimizer: torch.optim.Optimizer,
                metrics: Optional[Dict[str, Tuple[Callable, Dict]]],
+               task_type: str,
                device: torch.device
                ):
     """
@@ -28,6 +29,7 @@ def train_step(model: torch.nn.Module,
             e.g. classification_metrics = {
                 'accuracy': (accuracy_score, {}),
                 'precision': (precision_score, {'average': 'weighted'})}.
+        task_type (str): The type of task, either 'classification' or 'regression'.
         device (torch.device): The device to perform computations on (e.g., 'cpu' or 'cuda').
         
     Returns:
@@ -46,14 +48,23 @@ def train_step(model: torch.nn.Module,
         
         optimizer.zero_grad()
         outputs = model(inputs)
-        loss = loss_fn(outputs, targets)
+      
+        if task_type == 'classification':
+            loss = loss_fn(outputs, targets)
+            preds = torch.argmax(outputs, dim=1).cpu().numpy()
+        elif task_type == 'regression':
+            outputs = outputs.squeeze()
+            loss = loss_fn(outputs, targets)
+            preds = outputs.detach().cpu().numpy()
+        else:
+            raise ValueError("task_type must be either 'classification' or 'regression'")
+      
         loss.backward()
         optimizer.step()
-        
         train_loss += loss.item()
-        preds = torch.argmax(outputs, 1)
+      
         all_targets.extend(targets.cpu().numpy())
-        all_preds.extend(preds.cpu().numpy())
+        all_preds.extend(preds)
     
     avg_loss = train_loss / num_batches
     scores = {'loss': avg_loss}
@@ -69,6 +80,7 @@ def evaluation_step(model: torch.nn.Module,
                     dataloader: DataLoader,
                     loss_fn: torch.nn.Module,
                     metrics: Optional[Dict[str, Tuple[Callable, Dict]]],
+                    task_type: str,
                     device: torch.device
                    ):
     """
@@ -86,6 +98,7 @@ def evaluation_step(model: torch.nn.Module,
             e.g. classification_metrics = {
                 'accuracy': (accuracy_score, {}),
                 'precision': (precision_score, {'average': 'weighted'})}.
+        task_type (str): The type of task, either 'classification' or 'regression'.
         device (torch.device): The device to perform computations on (e.g., 'cpu' or 'cuda').
         
     Returns:
@@ -104,12 +117,20 @@ def evaluation_step(model: torch.nn.Module,
             inputs, targets = inputs.to(device), targets.to(device)
             
             outputs = model(inputs)
-            loss = loss_fn(outputs, targets)
+          
+            if task_type == 'classification':
+                loss = loss_fn(outputs, targets)
+                preds = torch.argmax(outputs, dim=1).cpu().numpy()
+            elif task_type == 'regression':
+                outputs = outputs.squeeze()
+                loss = loss_fn(outputs, targets)
+                preds = outputs.detach().cpu().numpy()
+            else:
+                raise ValueError("task_type must be either 'classification' or 'regression'")
             
             val_loss += loss.item()
-            preds = torch.argmax(outputs, dim=1)
             all_targets.extend(targets.cpu().numpy())
-            all_preds.extend(preds.cpu().numpy())
+            all_preds.extend(preds)
     
     avg_loss = val_loss / num_batches
     scores = {'loss': avg_loss}
@@ -169,6 +190,7 @@ def train(model: torch.nn.Module,
           metrics: Optional[dict],
           epochs: int,
           early_stopping: Optional[EarlyStopping] = None,
+          task_type: str,
           device: torch.device = 'cpu',
           writer: tensorboard.writer.SummaryWriter = None
           ) -> pd.DataFrame:
@@ -182,12 +204,14 @@ def train(model: torch.nn.Module,
                                         loss_fn=loss_fn,
                                         optimizer=optimizer,
                                         metrics=metrics,
+                                        task_type=task_type,
                                         device=device)
       
         valid_score = evaluation_step(model=model,
                                        dataloader=validation_dataloader,
                                        loss_fn=loss_fn,
                                        metrics=metrics,
+                                       task_type=task_type,
                                        device=device)
  
         if writer:
