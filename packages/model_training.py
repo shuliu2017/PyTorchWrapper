@@ -188,9 +188,9 @@ def train(model: torch.nn.Module,
           optimizer: torch.optim.Optimizer,
           loss_fn: torch.nn.Module,
           metrics: Optional[dict],
+          task_type: str,
           epochs: int,
           early_stopping: Optional[EarlyStopping] = None,
-          task_type: str,
           device: torch.device = 'cpu',
           writer: tensorboard.writer.SummaryWriter = None
           ) -> pd.DataFrame:
