@@ -9,7 +9,7 @@ def train_step(model: torch.nn.Module,
                dataloader: DataLoader,
                loss_fn: torch.nn.Module,
                optimizer: torch.optim.Optimizer,
-               Optional[Dict[str, Tuple[Callable, dict]]],
+               Optional[Dict[str, Tuple[Callable, Dict]]],
                device: torch.device
                ):
     """
@@ -31,7 +31,7 @@ def train_step(model: torch.nn.Module,
         device (torch.device): The device to perform computations on (e.g., 'cpu' or 'cuda').
         
     Returns:
-        dict: A dictionary containing the average loss, accuracy, precision, recall, and F1-score.
+        Dict: A dictionary containing the average loss, accuracy, precision, recall, and F1-score.
     """
     model.train()
     train_loss = 0
@@ -68,7 +68,7 @@ def train_step(model: torch.nn.Module,
 def evaluation_step(model: torch.nn.Module,
                     dataloader: DataLoader,
                     loss_fn: torch.nn.Module,
-                    metrics: Optional[Dict[str, Tuple[Callable, dict]]],
+                    metrics: Optional[Dict[str, Tuple[Callable, Dict]]],
                     device: torch.device
                    ):
     """
@@ -89,7 +89,7 @@ def evaluation_step(model: torch.nn.Module,
         device (torch.device): The device to perform computations on (e.g., 'cpu' or 'cuda').
         
     Returns:
-        dict: A dictionary containing the average loss, accuracy, precision, recall, and F1-score.
+        Dict: A dictionary containing the average loss, accuracy, precision, recall, and F1-score.
     """
     model.eval()
     val_loss = 0
