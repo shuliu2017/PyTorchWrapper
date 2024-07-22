@@ -9,7 +9,7 @@ def train_step(model: torch.nn.Module,
                dataloader: DataLoader,
                loss_fn: torch.nn.Module,
                optimizer: torch.optim.Optimizer,
-               metrics: dict,
+               metrics: Optional[dict],
                device: torch.device
                ):
     """
@@ -57,8 +57,9 @@ def train_step(model: torch.nn.Module,
     avg_loss = train_loss / num_batches
     scores = {'loss': avg_loss}
 
-    for metric_name, (metric_fn, metric_params) in metrics.items():
-        scores[metric_name] = metric_fn(all_targets, all_preds, **metric_params)
+    if metrics:
+        for metric_name, (metric_fn, metric_params) in metrics.items():
+            scores[metric_name] = metric_fn(all_targets, all_preds, **metric_params)
     
     return scores
 
@@ -66,7 +67,7 @@ def train_step(model: torch.nn.Module,
 def evaluation_step(model: torch.nn.Module,
                     dataloader: DataLoader,
                     loss_fn: torch.nn.Module,
-                    metrics: dict,
+                    metrics: Optional[dict],
                     device: torch.device
                    ):
     """
@@ -111,8 +112,9 @@ def evaluation_step(model: torch.nn.Module,
     avg_loss = val_loss / num_batches
     scores = {'loss': avg_loss}
 
-    for metric_name, (metric_fn, metric_params) in metrics.items():
-        scores[metric_name] = metric_fn(all_targets, all_preds, **metric_params)
+    if metrics:
+        for metric_name, (metric_fn, metric_params) in metrics.items():
+            scores[metric_name] = metric_fn(all_targets, all_preds, **metric_params)
     
     return scores
 
@@ -162,7 +164,7 @@ def train(model: torch.nn.Module,
           validation_dataloader: torch.utils.data.DataLoader,
           optimizer: torch.optim.Optimizer,
           loss_fn: torch.nn.Module,
-          metrics: dict,
+          metrics: Optional[dict],
           epochs: int,
           early_stopping: Optional[EarlyStopping] = None,
           device: torch.device = 'cpu',
@@ -177,13 +179,14 @@ def train(model: torch.nn.Module,
                                         dataloader=train_dataloader,
                                         loss_fn=loss_fn,
                                         optimizer=optimizer,
-                                        device=device,
-                                        metrics=metrics)
+                                        metrics=metrics,
+                                        device=device)
+      
         valid_score = evaluation_step(model=model,
                                        dataloader=validation_dataloader,
                                        loss_fn=loss_fn,
-                                       device=device,
-                                       metrics=metrics)
+                                       metrics=metrics,
+                                       device=device)
  
         if writer:
             for key in train_score.keys():
