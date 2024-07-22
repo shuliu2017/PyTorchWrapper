@@ -6,6 +6,17 @@ from torchvision import datasets, transforms
 from torch.utils.data import DataLoader
 from torch.utils.tensorboard import SummaryWriter
 
+def set_random_seed(seed: int=0):
+    """Set random seed for numpy, torch, and torch.cuda.
+
+    Args:
+          seed (int: Random seed. Default is 0.
+    """
+    
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed(seed)
+
 def get_device() -> torch.device:
     """
     Returns the available device (CPU or CUDA).
@@ -17,16 +28,33 @@ def get_device() -> torch.device:
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     return device
 
-def set_random_seed(seed: int=0):
-    """Set random seed for numpy, torch, and torch.cuda.
+def enable_multi_gpu(model: torch.nn.Module, verbose: bool = True) -> torch.nn.Module:
+    """
+    Configures the model to use multiple GPUs if available.
+
+    This function checks the number of available GPUs and, if more than one GPU is available,
+    it wraps the model with `nn.DataParallel` to enable data parallelism. If no GPUs are available,
+    it uses the CPU. Optionally, it prints the status of the device configuration.
 
     Args:
-          seed (int: Random seed. Default is 0.
+        model (torch.nn.Module): The model to be configured for multi-GPU usage.
+        verbose (bool, optional): If True, prints the device configuration status. Default is True.
+
+    Returns:
+        torch.nn.Module: The configured model, either wrapped with `nn.DataParallel` for multi-GPU
+        usage or unchanged for single GPU or CPU usage.
     """
-    
-    np.random.seed(seed)
-    torch.manual_seed(seed)
-    torch.cuda.manual_seed(seed)
+    if torch.cuda.device_count() == 0:
+        if verbose:
+            print('(◕‿◕✿) Using CPU.')
+        return model
+    else:
+        if verbose:
+            print(f"(◕‿◕✿) Using {torch.cuda.device_count()} GPUs.")
+        if torch.cuda.device_count() > 1:
+            return nn.DataParallel(model)
+        else:
+            return model
 
 def create_image_classification_dataloader(data_dir: str, transform: transforms = transforms.ToTensor, 
                       batch_size: int = 32, shuffle: bool = True, num_workers: int = 0) -> DataLoader:
