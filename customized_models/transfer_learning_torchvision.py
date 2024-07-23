@@ -16,6 +16,7 @@ def initialize_effnetb2(out_features: int = 8,
     """
                           
     weights = torchvision.models.EfficientNet_B2_Weights.DEFAULT
+    model = torchvision.models.efficientnet_b2(weights=weights)
                           
     for param in model.features.parameters():
         param.requires_grad=False
@@ -47,6 +48,7 @@ def initialize_effnetv2s(out_features: int = 8,
     """
 
     weights = torchvision.models.EfficientNet_V2_S_Weights.DEFAULT
+    model = torchvision.models.efficientnet_v2_s(weights=weights)
 
     for param in model.features.parameters():
         param.requires_grad=False
