@@ -25,10 +25,16 @@ except Exception as e:
 sys.path.append('/content/pyTorchWrapper')
 ```
 
-# install requirements
+# Install requirements
 ```
 !pip install -r /content/pyTorchWrapper/requirements.txt
 ```
+
+# Available Modules
+
+- efficientNetB2
+- efficientNetV2S
+- VIT
 
 # Load Modules
 
@@ -95,3 +101,11 @@ test_result = pk.model_workflow.evaluation_step(test_model, test_loader, loss_fn
 # Example Notebooks
 
 - regression [simple regression on random noise](https://github.com/shuliu2017/pyTorchWrapper/blob/main/notebooks/simple_regression.ipynb)
+
+# Links
+
+- [PyTorch](https://pytorch.org/). The official website of PyTorch.
+
+- [Hugging Face](https://huggingface.co/). A platform with machine learning tools.
+
+- [Zero to Mastery Learn PyTorch for Deep Learning](https://www.learnpytorch.io/). PyTorch tutorial. Some modules of the simpleTorchWrapper are inspired by the examples in this tutorial.
