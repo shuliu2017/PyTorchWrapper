@@ -1,5 +1,5 @@
 # PyTorchWrapper
-A general framework of pytorch classification and regression tasks
+A general framework of pytorch classification and regression tasks. This package is currently under development.
 
   
 ```
@@ -18,16 +18,7 @@ except Exception as e:
 sys.path.append('/content/lyl-cnn/packages')
 ```
 
-# Dataset
+# Model Training
 link: https://www.kaggle.com/datasets/shrutisaxena/yoga-pose-image-classification-dataset
 
-# Exploratory Data Analysis
-
-# Metrics
-
-# Models
-
-# Performance
-
-# Discussion
 
