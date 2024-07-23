@@ -26,6 +26,7 @@ sys.path.append('/content/pyTorchWrapper')
 ```
 
 - Install requirements
+  
 ```
 !pip install -r /content/pyTorchWrapper/requirements.txt
 ```
@@ -82,6 +83,7 @@ result = pk.model_workflow.train(model=model,
 ```
 
 - Regression
+  
 ```
 loss_fn = torch.nn.MSELoss()
 task_type = 'regression'
@@ -89,6 +91,7 @@ metrics = pk.customized_metrics.regression_metrics # MSE, MAE, R2; evaluated per
 ```
 
 - Classification
+
 ```
 loss_fn = torch.nn.CrossEntropyLoss()
 task_type = 'classification'
@@ -96,15 +99,19 @@ metrics = pk.customized_metrics.classification_metrics # Accuracy, Recall, Preci
 ```
 
 - Commonly used optimizer
+
 ```
 torch.optim.Adam(params=model.parameters(), lr=0.001)
 torch.optim.SGD(params=model.parameters(), lr=0.001)
 ```
 
 ## Model Evaluation
+
+```
 test_model = cm.vit_regressor.ViTRegressor().to(device)
 pk.pytorch_tools.load_model_state(test_model, target_dir='/content', model_name= f'{model_name}_early_stopping_checkpoint.pt')
 test_result = pk.model_workflow.evaluation_step(test_model, test_loader, loss_fn, metrics, task_type, device)
+```
 
 ## Example Notebooks
 
