@@ -33,6 +33,9 @@ import customized_models as cm
 
 # Model Training
 
+
+- Regression
+
 ```
 # configure multiprocessing
 import torch.multiprocessing as mp
@@ -64,6 +67,13 @@ result = pk.model_training.train(model=model,
                                   epochs=epochs,
                                   early_stopping=early_stopping,
                                   device=device)
+```
+
+- Classification
+```
+loss_fn = torch.nn.CrossEntropyLoss()
+task_type = 'classification'
+metrics = pk.customized_metrics.classification_metrics
 ```
 
 # Model Evaluation
