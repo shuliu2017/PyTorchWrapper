@@ -79,3 +79,7 @@ metrics = pk.customized_metrics.classification_metrics
 ```
 
 # Model Evaluation
+
+# Example Notebooks
+
+- regression [simple regression on random noise](https://github.com/shuliu2017/pyTorchWrapper/blob/main/notebooks/simple_regression.ipynb)
