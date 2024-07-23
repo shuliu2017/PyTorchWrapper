@@ -1,6 +1,6 @@
 # simpleTorchWrapper
 
-<img src="./logo.jpg" alt="simpleTorchWrapper" title="simpleTorchWrapper" width="500" />
+<img src="./logo.jpg" alt="simpleTorchWrapper" title="simpleTorchWrapper" width="200" />
 
 
 A general framework of pytorch classification and regression tasks. This package is currently under development.
