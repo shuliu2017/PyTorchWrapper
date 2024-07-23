@@ -24,7 +24,7 @@ def get_device() -> torch.device:
     Returns:
         torch.device: The device to be used for computations.
     """
-
+    
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     return device
 
@@ -118,7 +118,7 @@ def save_model_state(model: torch.nn.Module, target_dir: str, model_name: str):
         os.makedirs(target_dir)
 
     # Ensure the model_name ends with .pth or .pt
-    assert model_name.endswith(".pth") or model_name.endswith(".pt"), "model_name should end with .pth or .pt"
+    assert model_name.endswith(".pth") or model_name.endswith(".pt"), "(◕‿◕✿) model_name should end with .pth or .pt"
 
     # Create the full path
     full_path = os.path.join(target_dir, model_name)
@@ -126,7 +126,7 @@ def save_model_state(model: torch.nn.Module, target_dir: str, model_name: str):
     # Save the model state dictionary
     torch.save(obj=model.state_dict(), f=full_path)
 
-    print(f"Model state saved to {full_path}")
+    print(f"(◕‿◕✿) Model state saved to {full_path}")
 
 
 
@@ -143,7 +143,7 @@ def load_model_state(model: torch.nn.Module, target_dir: str, model_name: str):
         None
     """
     # Ensure the model_name ends with .pth or .pt
-    assert model_name.endswith(".pth") or model_name.endswith(".pt"), "model_name should end with .pth or .pt"
+    assert model_name.endswith(".pth") or model_name.endswith(".pt"), "(◕‿◕✿) model_name should end with .pth or .pt"
 
     # Create the full path
     full_path = os.path.join(target_dir, model_name)
