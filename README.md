@@ -7,11 +7,11 @@ import os
 import sys
 
 try:
-    if not os.path.isdir('/PyTorchWrapper'):
+    if not os.path.isdir('/pyTorchWrapper'):
         raise FileNotFoundError
 except FileNotFoundError:
-    print("(◕‿◕✿) Downloading lyl-cnn from GitHub.")
-    os.system(f'git clone https://github.com/shuliu2017/lyl-cnn.git')
+    print("(◕‿◕✿) Downloading pyTorchWrapper from GitHub.")
+    os.system(f'git clone https://github.com/shuliu2017/pyTorchWrapper.git')
 except Exception as e:
     print(f"An unexpected error occurred: {e}")
 
@@ -20,6 +20,7 @@ sys.path.append('/content/lyl-cnn/packages')
 
 # Model Training
 
+```
 epochs = 1
 
 pc.pytorch_tools.set_random_seed(seed=0)
@@ -46,4 +47,6 @@ result = pc.model_training.train(model=model,
                                   epochs=epochs,
                                   early_stopping=early_stopping,
                                   device=device)
+```
 
+# Model Evaluation
