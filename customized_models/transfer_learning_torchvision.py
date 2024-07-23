@@ -25,7 +25,9 @@ def initialize_effnetb2(out_features: int = 8,
     device = pytorch_tools.get_device()
     weights = torchvision.models.EfficientNet_B2_Weights.DEFAULT
     model = torchvision.models.efficientnet_b2(weights=weights).to(device)
-    pytorch_tools.freeze_base_layers(model)
+                          
+    for param in model.features.parameters():
+        param.requires_grad=False
 
     # name = 'EfficientNet_B2;
     # model.name = name
@@ -64,7 +66,9 @@ def initialize_effnetv2s(out_features: int = 8,
     device = pytorch_tools.get_device()
     weights = torchvision.models.EfficientNet_V2_S_Weights.DEFAULT
     model = torchvision.models.efficientnet_v2_s(weights=weights).to(device)
-    pytorch_tools.freeze_base_layers(model)
+
+    for param in model.features.parameters():
+        param.requires_grad=False
 
     in_features=1280
 
