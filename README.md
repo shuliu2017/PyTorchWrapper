@@ -3,11 +3,11 @@
 <img src="./logo.jpg" alt="simpleTorchWrapper" title="simpleTorchWrapper" width="300" />
 
 
-A general framework of pytorch classification and regression tasks. This package is currently under development.
+A general framework for PyTorch classification and regression tasks. It is lightweight, easy to use, and currently under development.
 
-This package is lite and simple to use.
+## Installation
 
-In Google Colab, run the following code to download `pyTorchWrapper`.
+- In Google Colab, run the following code to download `pyTorchWrapper`.
 
 ```
 import os
@@ -25,7 +25,7 @@ except Exception as e:
 sys.path.append('/content/pyTorchWrapper')
 ```
 
-## Install requirements
+- Install requirements
 ```
 !pip install -r /content/pyTorchWrapper/requirements.txt
 ```
@@ -110,13 +110,6 @@ test_result = pk.model_workflow.evaluation_step(test_model, test_loader, loss_fn
 
 - regression [simple regression on random noise](https://github.com/shuliu2017/pyTorchWrapper/blob/main/notebooks/simple_regression.ipynb)
 
-## Links
-
-- [PyTorch](https://pytorch.org/) The official website of PyTorch.
-
-- [Hugging Face](https://huggingface.co/) A platform with machine learning tools.
-
-- [Zero to Mastery Learn PyTorch for Deep Learning](https://www.learnpytorch.io/) PyTorch tutorial. Some modules of the simpleTorchWrapper are inspired by the examples in this tutorial.
 
 ## Team
 
