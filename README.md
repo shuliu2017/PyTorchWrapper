@@ -1,18 +1,13 @@
-# lyl-cnn
-A general framework of CNN classification tasks
+# PyTorchWrapper
+A general framework of pytorch classification and regression tasks
 
-- predict the yoga class
-
-- give a score of the yoga pose
-
-- To get the package, run the following code.
   
 ```
 import os
 import sys
 
 try:
-    if not os.path.isdir('/content/lyl-cnn'):
+    if not os.path.isdir('/PyTorchWrapper'):
         raise FileNotFoundError
 except FileNotFoundError:
     print("(◕‿◕✿) Downloading lyl-cnn from GitHub.")
