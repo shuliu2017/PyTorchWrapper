@@ -67,7 +67,7 @@ def train_step(model: torch.nn.Module,
         all_preds.extend(preds)
     
     avg_loss = train_loss / num_batches
-    scores = {'loss': avg_loss}
+    scores = {'avg_batch_loss': avg_loss}
 
     if metrics:
         for metric_name, (metric_fn, metric_params) in metrics.items():
@@ -133,7 +133,7 @@ def evaluation_step(model: torch.nn.Module,
             all_preds.extend(preds)
     
     avg_loss = val_loss / num_batches
-    scores = {'loss': avg_loss}
+    scores = {'avg_batch_loss': avg_loss}
 
     if metrics:
         for metric_name, (metric_fn, metric_params) in metrics.items():
@@ -234,7 +234,7 @@ def train(model: torch.nn.Module,
         valid_scores = pd.concat([valid_scores, valid_score_df], ignore_index=True)
         
         if early_stopping is not None:
-            early_stopping(valid_score['loss'], model)
+            early_stopping(valid_score['avg_batch_loss'], model)
             if early_stopping.early_stop:
                 print("Early stopping")
                 break
