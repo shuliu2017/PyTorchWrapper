@@ -47,7 +47,7 @@ import customized_models as cm
 ## Model Training
 
 
-- Regression
+- Example
 
 ```
 # configure multiprocessing
@@ -98,7 +98,7 @@ task_type = 'classification'
 metrics = pk.customized_metrics.classification_metrics # Accuracy, Recall, Precision, F1; evaluated per epoch
 ```
 
-- Commonly used optimizer
+- Commonly used optimizers
 
 ```
 torch.optim.Adam(params=model.parameters(), lr=0.001)
