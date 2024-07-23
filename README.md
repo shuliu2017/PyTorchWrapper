@@ -17,7 +17,7 @@ except FileNotFoundError:
 except Exception as e:
     print(f"An unexpected error occurred: {e}")
 
-sys.path.append('/content')
+sys.path.append('/content/pyTorchWrapper')
 ```
 
 # Model Training
