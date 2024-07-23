@@ -30,7 +30,7 @@ sys.path.append('/content/pyTorchWrapper')
 !pip install -r /content/pyTorchWrapper/requirements.txt
 ```
 
-# Available Modules
+# Available Models
 
 - efficientNetB2
 - efficientNetV2S
@@ -104,8 +104,8 @@ test_result = pk.model_workflow.evaluation_step(test_model, test_loader, loss_fn
 
 # Links
 
-- [PyTorch](https://pytorch.org/). The official website of PyTorch.
+- [PyTorch](https://pytorch.org/) The official website of PyTorch.
 
-- [Hugging Face](https://huggingface.co/). A platform with machine learning tools.
+- [Hugging Face](https://huggingface.co/) A platform with machine learning tools.
 
-- [Zero to Mastery Learn PyTorch for Deep Learning](https://www.learnpytorch.io/). PyTorch tutorial. Some modules of the simpleTorchWrapper are inspired by the examples in this tutorial.
+- [Zero to Mastery Learn PyTorch for Deep Learning](https://www.learnpytorch.io/) PyTorch tutorial. Some modules of the simpleTorchWrapper are inspired by the examples in this tutorial.
