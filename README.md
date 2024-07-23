@@ -1,4 +1,4 @@
-# pyTorchWrapper
+# simpleTorchWrapper
 
 <img src="./logo.jpg" alt="simpleTorchWrapper" title="simpleTorchWrapper" width="500" />
 
