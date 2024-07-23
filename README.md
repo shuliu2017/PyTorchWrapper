@@ -1,4 +1,7 @@
-# PyTorchWrapper
+# pyTorchWrapper
+
+![Image](./icon.jpg)
+
 A general framework of pytorch classification and regression tasks. This package is currently under development.
 
 This package is lite and simple to use.
