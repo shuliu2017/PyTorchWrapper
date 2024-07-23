@@ -21,8 +21,10 @@ except Exception as e:
 sys.path.append('/content/pyTorchWrapper')
 ```
 
-- install requirements
-- !pip install -r /content/pyTorchWrapper/requirements.txt
+# install requirements
+```
+!pip install -r /content/pyTorchWrapper/requirements.txt
+```
 
 # Load Modules
 
