@@ -57,7 +57,7 @@ def train_step(model: torch.nn.Module,
             loss = loss_fn(outputs, targets)
             preds = outputs.detach().cpu().numpy()
         else:
-            raise ValueError("task_type must be either 'classification' or 'regression'")
+            raise ValueError("(◕‿◕✿) task_type must be either 'classification' or 'regression'")
       
         loss.backward()
         optimizer.step()
@@ -167,17 +167,17 @@ class EarlyStopping:
         if self.best_loss is None:
             self.best_loss = val_loss
             if self.verbose:
-                print(f'Initial Validation loss ({val_loss:.6f}).  Saving model ...')
+                print(f'(◕‿◕✿) Initial Validation loss ({val_loss:.6f}).  Saving model ...')
             torch.save(model.state_dict(), self.path)
         elif val_loss > self.best_loss + self.delta:
             self.counter += 1
             if self.verbose:
-                print(f'EarlyStopping counter: {self.counter} out of {self.patience}')
+                print(f'(◕‿◕✿) EarlyStopping counter: {self.counter} out of {self.patience}')
             if self.counter >= self.patience:
                 self.early_stop = True
         else:
             if self.verbose:
-                print(f'Validation loss decreased ({self.best_loss:.6f} --> {val_loss:.6f}).  Saving model ...')
+                print(f'(◕‿◕✿) Validation loss decreased ({self.best_loss:.6f} --> {val_loss:.6f}).  Saving model ...')
             self.best_loss = val_loss
             torch.save(model.state_dict(), self.path)
             self.counter = 0
