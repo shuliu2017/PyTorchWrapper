@@ -61,9 +61,9 @@ loss_fn = torch.nn.MSELoss()
 task_type = 'regression'
 
 optimizer = torch.optim.Adam(params=model.parameters(), lr=0.001)
-early_stopping = pk.model_training.EarlyStopping(patience=8, path=f'{model_name}_early_stopping_checkpoint.pt')
+early_stopping = pk.model_workflow.EarlyStopping(patience=8, path=f'{model_name}_early_stopping_checkpoint.pt')
 metrics = pk.customized_metrics.regression_metrics
-result = pk.model_training.train(model=model,
+result = pk.model_workflow.train(model=model,
                                   train_dataloader=train_loader,
                                   validation_dataloader=val_loader,
                                   optimizer=optimizer,
@@ -82,7 +82,15 @@ task_type = 'classification'
 metrics = pk.customized_metrics.classification_metrics
 ```
 
+- Commonly used optimizer
+```
+TBD
+```
+
 # Model Evaluation
+test_model = cm.vit_regressor.ViTRegressor().to(device)
+pk.pytorch_tools.load_model_state(test_model, target_dir='/content', model_name= f'{model_name}_early_stopping_checkpoint.pt')
+test_result = pk.model_workflow.evaluation_step(test_model, test_loader, loss_fn, metrics, task_type, device)
 
 # Example Notebooks
 
