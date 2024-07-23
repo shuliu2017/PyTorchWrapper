@@ -1,28 +1,20 @@
 import torch
 from torch import nn
 import torchvision
-import pytorch_tools
 
 def initialize_effnetb2(out_features: int = 8,
-                        dropout: float = 0.2,
-                        device: torch.device = torch.device('cpu'),
-                        random_seed: int = 0) -> nn.Module:
+                        dropout: float = 0.2) -> nn.Module:
     """
     Initializes an EfficientNet_B2 model with a custom classifier head.
 
     Args:
         out_features (int): The number of output features for the classifier head. Default is 8.
         dropout (float): The dropout rate for the classifier head. Default is 0.2.
-        device (torch.device): The device to run the model on. Default is 'cpu'.
-        random_seed (int): The random seed for reproducibility. Default is 0.
 
     Returns:
         nn.Module: The EfficientNet_B2 model with the updated classifier head.
     """
-
-    pytorch_tools.set_random_seed(random_seed)
-
-    device = pytorch_tools.get_device()
+                          
     weights = torchvision.models.EfficientNet_B2_Weights.DEFAULT
     model = torchvision.models.efficientnet_b2(weights=weights).to(device)
                           
@@ -40,30 +32,21 @@ def initialize_effnetb2(out_features: int = 8,
                   out_features=out_features)
     )
 
-    model = model.to(device)
-
     return model
 
 def initialize_effnetv2s(out_features: int = 8,
-                         dropout: float = 0.2,
-                         device: torch.device = torch.device('cpu'),
-                         random_seed: int = 0) -> nn.Module:
+                         dropout: float = 0.2) -> nn.Module:
     """
     Initializes an EfficientNet_V2_S model with a custom classifier head.
 
     Args:
         out_features (int): The number of output features for the classifier head. Default is 8.
         dropout (float): The dropout rate for the classifier head. Default is 0.2.
-        device (torch.device): The device to run the model on. Default is 'cpu'.
-        random_seed (int): The random seed for reproducibility. Default is 0.
 
     Returns:
         nn.Module: The EfficientNet_V2_S model with the updated classifier head.
     """
 
-    pytorch_tools.set_random_seed(random_seed)
-
-    device = pytorch_tools.get_device()
     weights = torchvision.models.EfficientNet_V2_S_Weights.DEFAULT
     model = torchvision.models.efficientnet_v2_s(weights=weights).to(device)
 
@@ -77,8 +60,6 @@ def initialize_effnetv2s(out_features: int = 8,
         nn.Linear(in_features=in_features,
                   out_features=out_features)
     )
-
-    model = model.to(device)
 
     return model
 
