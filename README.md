@@ -34,6 +34,10 @@ import customized_models as cm
 # Model Training
 
 ```
+# configure multiprocessing
+import torch.multiprocessing as mp
+mp.set_start_method('spawn', force=True)
+
 epochs = 1
 
 pk.pytorch_tools.set_random_seed(seed=0)
