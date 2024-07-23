@@ -25,25 +25,25 @@ except Exception as e:
 sys.path.append('/content/pyTorchWrapper')
 ```
 
-# Install requirements
+## Install requirements
 ```
 !pip install -r /content/pyTorchWrapper/requirements.txt
 ```
 
-# Available Models
+## Available Models
 
 - efficientNetB2
 - efficientNetV2S
 - VIT
 
-# Load Modules
+## Load Modules
 
 ```
 import packages as pk
 import customized_models as cm
 ```
 
-# Model Training
+## Model Training
 
 
 - Regression
@@ -101,19 +101,35 @@ torch.optim.Adam(params=model.parameters(), lr=0.001)
 torch.optim.SGD(params=model.parameters(), lr=0.001)
 ```
 
-# Model Evaluation
+## Model Evaluation
 test_model = cm.vit_regressor.ViTRegressor().to(device)
 pk.pytorch_tools.load_model_state(test_model, target_dir='/content', model_name= f'{model_name}_early_stopping_checkpoint.pt')
 test_result = pk.model_workflow.evaluation_step(test_model, test_loader, loss_fn, metrics, task_type, device)
 
-# Example Notebooks
+## Example Notebooks
 
 - regression [simple regression on random noise](https://github.com/shuliu2017/pyTorchWrapper/blob/main/notebooks/simple_regression.ipynb)
 
-# Links
+## Links
 
 - [PyTorch](https://pytorch.org/) The official website of PyTorch.
 
 - [Hugging Face](https://huggingface.co/) A platform with machine learning tools.
 
 - [Zero to Mastery Learn PyTorch for Deep Learning](https://www.learnpytorch.io/) PyTorch tutorial. Some modules of the simpleTorchWrapper are inspired by the examples in this tutorial.
+
+## Team
+
+LYL is an independent research and development team made up of PhDs in computer science, statistics, and physics. We are dedicated to creating innovative applications and conducting cutting-edge research to simplify daily life and enhance overall well-being. With a passion for leveraging technology to develop practical solutions, we aim to make life more convenient and enjoyable.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](./LICENSE) file for details.
+
+## Acknowledgements
+
+This project is inspired by the code from other open-source projects. We would like to thank the authors of these projects for their contributions:
+
+- [PyTorch](https://pytorch.org/)
+- [Zero to Mastery Learn PyTorch for Deep Learning](https://www.learnpytorch.io/)
+
