@@ -1,6 +1,6 @@
 # simpleTorchWrapper
 
-<img src="./logo.jpg" alt="simpleTorchWrapper" title="simpleTorchWrapper" width="200" />
+<img src="./logo.jpg" alt="simpleTorchWrapper" title="simpleTorchWrapper" width="300" />
 
 
 A general framework of pytorch classification and regression tasks. This package is currently under development.
@@ -81,16 +81,24 @@ result = pk.model_workflow.train(model=model,
                                   device=device)
 ```
 
+- Regression
+```
+loss_fn = torch.nn.MSELoss()
+task_type = 'regression'
+metrics = pk.customized_metrics.regression_metrics # MSE, MAE, R2; evaluated per epoch
+```
+
 - Classification
 ```
 loss_fn = torch.nn.CrossEntropyLoss()
 task_type = 'classification'
-metrics = pk.customized_metrics.classification_metrics
+metrics = pk.customized_metrics.classification_metrics # Accuracy, Recall, Precision, F1; evaluated per epoch
 ```
 
 - Commonly used optimizer
 ```
-TBD
+torch.optim.Adam(params=model.parameters(), lr=0.001)
+torch.optim.SGD(params=model.parameters(), lr=0.001)
 ```
 
 # Model Evaluation
