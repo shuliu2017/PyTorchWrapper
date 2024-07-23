@@ -1,13 +1,15 @@
 # PyTorchWrapper
 A general framework of pytorch classification and regression tasks. This package is currently under development.
 
-  
+
+In Google Colab, run the following code to download `pyTorchWrapper`.
+
 ```
 import os
 import sys
 
 try:
-    if not os.path.isdir('/pyTorchWrapper'):
+    if not os.path.isdir('/content/pyTorchWrapper'):
         raise FileNotFoundError
 except FileNotFoundError:
     print("(◕‿◕✿) Downloading pyTorchWrapper from GitHub.")
@@ -15,7 +17,7 @@ except FileNotFoundError:
 except Exception as e:
     print(f"An unexpected error occurred: {e}")
 
-sys.path.append('/content/lyl-cnn/packages')
+sys.path.append('/content')
 ```
 
 # Model Training
