@@ -15,7 +15,7 @@ except FileNotFoundError:
     print("(◕‿◕✿) Downloading pyTorchWrapper from GitHub.")
     os.system(f'git clone https://github.com/shuliu2017/pyTorchWrapper.git')
 except Exception as e:
-    print(f"An unexpected error occurred: {e}")
+    print(f"(◕‿◕✿) An unexpected error occurred: {e}")
 
 sys.path.append('/content/pyTorchWrapper')
 ```
