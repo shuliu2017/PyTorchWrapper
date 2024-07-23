@@ -77,19 +77,6 @@ def create_image_classification_dataloader(data_dir: str, transform: transforms 
     dataloader = DataLoader(data, batch_size=batch_size, shuffle=shuffle, num_workers=num_workers)
     return dataloader, class_names
 
-
-def freeze_base_layers(model: torch.nn.Module):
-    """
-    Freezes the base layers of a given model.
-
-    Args:
-        model (torch.nn.Module): The model whose base layers are to be frozen.
-    """
-
-    for param in model.features.parameters():
-        param.requires_grad=False
-
-
 def create_writer(experiment_name: str, model_name: str, extra: str = '') -> SummaryWriter:
     """
     Creates a SummaryWriter object for logging training information to TensorBoard.
