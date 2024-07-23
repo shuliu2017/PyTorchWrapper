@@ -1,6 +1,7 @@
 # PyTorchWrapper
 A general framework of pytorch classification and regression tasks. This package is currently under development.
 
+This package is lite and simple to use.
 
 In Google Colab, run the following code to download `pyTorchWrapper`.
 
@@ -20,15 +21,22 @@ except Exception as e:
 sys.path.append('/content/pyTorchWrapper')
 ```
 
-# install requirements
-# !pip install -r /content/pyTorchWrapper/requirements.txt
+- install requirements
+- !pip install -r /content/pyTorchWrapper/requirements.txt
+
+# Load Modules
+
+```
+import packages as pk
+import customized_models as cm
+```
 
 # Model Training
 
 ```
 epochs = 1
 
-pc.pytorch_tools.set_random_seed(seed=0)
+pk.pytorch_tools.set_random_seed(seed=0)
 
 model = cm.vit_regressor.ViTRegressor()
 device = pk.pytorch_tools.get_device()
@@ -36,13 +44,13 @@ model = model.to(device)
 model = pk.pytorch_tools.enable_multi_gpu(model)
 
 model_name = 'vit_regressor'
-loss_fn =nn.MSELoss()
-task_type = 'regression' # use 'classification' for classification tasks
+loss_fn = torch.nn.MSELoss()
+task_type = 'regression'
 
 optimizer = torch.optim.Adam(params=model.parameters(), lr=0.001)
-early_stopping = pc.model_training.EarlyStopping(patience=8, path=f'{model_name}_early_stopping_checkpoint.pt')
-metrics = pc.customized_metrics.regression_metrics
-result = pc.model_training.train(model=model,
+early_stopping = pk.model_training.EarlyStopping(patience=8, path=f'{model_name}_early_stopping_checkpoint.pt')
+metrics = pk.customized_metrics.regression_metrics
+result = pk.model_training.train(model=model,
                                   train_dataloader=train_loader,
                                   validation_dataloader=val_loader,
                                   optimizer=optimizer,
