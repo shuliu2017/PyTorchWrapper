@@ -189,7 +189,7 @@ def train(model: torch.nn.Module,
           task_type: str,
           epochs: int,
           early_stopping: Optional[EarlyStopping] = None,
-          save_freq: int = 1,
+          save_freq: int = 0,
           save_path: str = 'model_checkpoint.pt',
           device: torch.device = 'cpu',
           writer: tensorboard.writer.SummaryWriter = None
@@ -236,11 +236,12 @@ def train(model: torch.nn.Module,
         if early_stopping is not None:
             early_stopping(valid_score['avg_batch_loss'], model)
             if early_stopping.early_stop:
-                print("Early stopping")
+                torch.save(model.state_dict(), save_path)
+                print(f'(◕‿◕✿) Early stopping triggered. Model saved to {save_path}.')
                 break
 
         # Save the model at specified intervals
-        if epoch % save_freq == 0 or early_stopping.early_stop:
+        if save_freq > 0 and epoch % save_freq == 0:
             print(f"Saving model at epoch {epoch + 1}")
             torch.save(model.state_dict(), save_path)
 
