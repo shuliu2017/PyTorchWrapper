@@ -28,8 +28,4 @@ for filename in os.listdir(current_dir):
     # Check if the file is a Python file but not __init__.py
     if filename.endswith('.py') and filename != '__init__.py':
         # Get the module name by removing the file extension
-        module_name = filename[:-3]
-        # Add the module name to __all__
-        __all__.append(module_name)
-        # Add the lazy loader to sys.modules
-        sys.modules[f'simple_torch_wrapper.models.{module_name}'] = LazyLoader(module_name)
+        module_name = filename
