@@ -167,8 +167,7 @@ class EarlyStopping:
         if self.best_loss is None:
             self.best_loss = val_loss
             if self.verbose:
-                print(f'(◕‿◕✿) Initial Validation loss ({val_loss:.6f}).  Saving model ...')
-            torch.save(model.state_dict(), self.path)
+                print(f'(◕‿◕✿) Initial Validation loss ({val_loss:.6f}).')
         elif val_loss > self.best_loss + self.delta:
             self.counter += 1
             if self.verbose:
@@ -179,7 +178,6 @@ class EarlyStopping:
             if self.verbose:
                 print(f'(◕‿◕✿) Validation loss decreased ({self.best_loss:.6f} --> {val_loss:.6f}).  Saving model ...')
             self.best_loss = val_loss
-            torch.save(model.state_dict(), self.path)
             self.counter = 0
 
 def train(model: torch.nn.Module,
@@ -191,6 +189,8 @@ def train(model: torch.nn.Module,
           task_type: str,
           epochs: int,
           early_stopping: Optional[EarlyStopping] = None,
+          save_freq: int = 1,
+          save_path: str = 'model_checkpoint.pt',
           device: torch.device = 'cpu',
           writer: tensorboard.writer.SummaryWriter = None
           ) -> pd.DataFrame:
@@ -238,6 +238,11 @@ def train(model: torch.nn.Module,
             if early_stopping.early_stop:
                 print("Early stopping")
                 break
+
+        # Save the model at specified intervals
+        if epoch % save_freq == 0 or early_stopping.early_stop:
+            print(f"Saving model at epoch {epoch + 1}")
+            torch.save(model.state_dict(), save_path)
 
     results = pd.merge(train_scores, valid_scores, on="epoch", suffixes=['_train', '_valid'])
 
