@@ -4,6 +4,7 @@ import torch
 from torch.utils.data import DataLoader
 from torch.utils import tensorboard
 from typing import Optional, Dict, Callable, Tuple
+import os
 
 def train_step(model: torch.nn.Module,
                dataloader: DataLoader,
@@ -177,6 +178,22 @@ class EarlyStopping:
             self.best_loss = val_loss
             self.counter = 0
 
+def _add_suffix_to_basename(path, suffix):
+    # Get the directory name and base name
+    dirname = os.path.dirname(path)
+    basename = os.path.basename(path)
+    
+    # Split the base name into name and extension
+    name, ext = os.path.splitext(basename)
+    
+    # Add the suffix to the name
+    new_basename = f"{name}{suffix}{ext}"
+    
+    # Reconstruct the full path with the new base name
+    new_path = os.path.join(dirname, new_basename)
+    
+    return new_path
+
 def train(model: torch.nn.Module,
           train_dataloader: torch.utils.data.DataLoader,
           validation_dataloader: torch.utils.data.DataLoader,
@@ -188,6 +205,7 @@ def train(model: torch.nn.Module,
           early_stopping: Optional[EarlyStopping] = None,
           save_freq: int = 0,
           save_path: str = 'model_checkpoint.pt',
+          overwrite=True,
           device: torch.device = 'cpu',
           writer: tensorboard.writer.SummaryWriter = None
           ) -> pd.DataFrame:
@@ -233,15 +251,20 @@ def train(model: torch.nn.Module,
         if early_stopping is not None:
             early_stopping(valid_score['avg_batch_loss'], model)
             if early_stopping.early_stop:
-                early_stopping_path = f'{save_path}_early_stopping'
+                early_stopping_path = _add_suffix_to_basename(save_path, '_early_stopping')
                 torch.save(model.state_dict(), early_stopping_path)
-                print(f'(◕‿◕✿) Early stopping triggered. Model saved to {early_stopping_path}.')
+                print(f'(◕‿◕✿) Early stopping triggered at epoch {epoch + 1}. Save model to {early_stopping_path}.')
                 break
 
         # Save the model at specified intervals
         if save_freq > 0 and epoch % save_freq == 0:
-            print(f"Saving model at epoch {epoch + 1}")
-            torch.save(model.state_dict(), save_path)
+            if overwrite:
+                torch.save(model.state_dict(), save_path)
+                print(f"(◕‿◕✿) Save model to {save_path} at epoch {epoch + 1}")
+            else:
+                epoch_path = _add_suffix_to_basename(save_path, f'_{epoch + 1}')
+                torch.save(model.state_dict(), epoch_path)
+                print(f"(◕‿◕✿) Save model to {epoch_path} at epoch {epoch + 1}")
 
     results = pd.merge(train_scores, valid_scores, on="epoch", suffixes=['_train', '_valid'])
 
