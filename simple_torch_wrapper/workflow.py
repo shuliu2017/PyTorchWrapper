@@ -234,11 +234,11 @@ def train(model: torch.nn.Module,
                 writer.add_scalars(
                     main_tag=key,
                     tag_scalar_dict={f"{key}_train": train_score[key],
-                                    "{key}_valid": valid_score[key]},
+                                     f"{key}_valid": valid_score[key]},
                     global_step=epoch +1
                     )
 
-            writer.close()
+            
 
         train_score['epoch'] = epoch + 1
         valid_score['epoch'] = epoch + 1
@@ -265,6 +265,9 @@ def train(model: torch.nn.Module,
                 epoch_path = _add_suffix_to_basename(save_path, f'_{epoch + 1}')
                 torch.save(model.state_dict(), epoch_path)
                 print(f"(◕‿◕✿) Save model to {epoch_path} at epoch {epoch + 1}")
+
+    if writer:
+        writer.close()
 
     results = pd.merge(train_scores, valid_scores, on="epoch", suffixes=['_train', '_valid'])
 
