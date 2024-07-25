@@ -236,8 +236,9 @@ def train(model: torch.nn.Module,
         if early_stopping is not None:
             early_stopping(valid_score['avg_batch_loss'], model)
             if early_stopping.early_stop:
-                torch.save(model.state_dict(), save_path)
-                print(f'(◕‿◕✿) Early stopping triggered. Model saved to {save_path}.')
+                early_stopping_path = f'{save_path}_early_stopping'
+                torch.save(model.state_dict(), early_stopping_path)
+                print(f'(◕‿◕✿) Early stopping triggered. Model saved to {early_stopping_path}.')
                 break
 
         # Save the model at specified intervals
