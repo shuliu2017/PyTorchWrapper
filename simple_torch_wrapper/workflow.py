@@ -142,7 +142,7 @@ def evaluation_step(model: torch.nn.Module,
     return scores
 
 class EarlyStopping:
-    def __init__(self, patience=8, verbose=True, delta=0, path='early_stopping_checkpoint.pt'):
+    def __init__(self, patience=8, verbose=True, delta=0):
         """
         Args:
             patience (int): How long to wait after last time validation loss improved.
@@ -151,8 +151,6 @@ class EarlyStopping:
                             Default: True
             delta (float): Minimum change in the monitored quantity to qualify as an improvement.
                             Default: 0
-            path (str): Path for the checkpoint to be saved to.
-                            Default: 'early_stopping_checkpoint.pt'
         """
         self.patience = patience
         self.verbose = verbose
@@ -160,7 +158,6 @@ class EarlyStopping:
         self.best_loss = None
         self.early_stop = False
         self.delta = delta
-        self.path = path
 
     def __call__(self, val_loss, model):
 
