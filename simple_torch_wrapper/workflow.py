@@ -127,7 +127,7 @@ def evaluation_step(model: torch.nn.Module,
                 loss = loss_fn(outputs, targets)
                 preds = outputs.detach().cpu().numpy()
             else:
-                raise ValueError("task_type must be either 'classification' or 'regression'")
+                raise ValueError("(◕‿◕✿) task_type must be either 'classification' or 'regression'")
             
             val_loss += loss.item()
             all_targets.extend(targets.cpu().numpy())
@@ -160,21 +160,21 @@ class EarlyStopping:
         self.early_stop = False
         self.delta = delta
 
-    def __call__(self, val_loss, model):
+    def __call__(self, val_loss, model, epoch):
 
         if self.best_loss is None:
             self.best_loss = val_loss
             if self.verbose:
-                print(f'(◕‿◕✿) Initial Validation loss ({val_loss:.6f}).')
+                print(f'    (◕‿◕✿) Epoch {epoch}: Initial Validation loss ({val_loss:.6f}).')
         elif val_loss > self.best_loss + self.delta:
             self.counter += 1
             if self.verbose:
-                print(f'(◕‿◕✿) EarlyStopping counter: {self.counter} out of {self.patience}')
+                print(f'    (◕‿◕✿) Epoch {epoch}: EarlyStopping counter: {self.counter} out of {self.patience}')
             if self.counter >= self.patience:
                 self.early_stop = True
         else:
             if self.verbose:
-                print(f'(◕‿◕✿) Validation loss decreased ({self.best_loss:.6f} --> {val_loss:.6f}).')
+                print(f'    (◕‿◕✿) Epoch {epoch}: Validation loss decreased ({self.best_loss:.6f} --> {val_loss:.6f}).')
             self.best_loss = val_loss
             self.counter = 0
 
@@ -213,7 +213,7 @@ def train(model: torch.nn.Module,
     train_scores = pd.DataFrame()
     valid_scores = pd.DataFrame()
 
-    for epoch in tqdm(range(epochs)):
+    for epoch in tqdm(range(1, epochs+1)):
         train_score = train_step(model=model,
                                         dataloader=train_dataloader,
                                         loss_fn=loss_fn,
@@ -235,13 +235,13 @@ def train(model: torch.nn.Module,
                     main_tag=key,
                     tag_scalar_dict={f"{key}_train": train_score[key],
                                      f"{key}_valid": valid_score[key]},
-                    global_step=epoch +1
+                    global_step=epoch
                     )
 
             
 
-        train_score['epoch'] = epoch + 1
-        valid_score['epoch'] = epoch + 1
+        train_score['epoch'] = epoch
+        valid_score['epoch'] = epoch
 
         train_score_df = pd.DataFrame([train_score])
         valid_score_df = pd.DataFrame([valid_score])
@@ -249,22 +249,23 @@ def train(model: torch.nn.Module,
         valid_scores = pd.concat([valid_scores, valid_score_df], ignore_index=True)
         
         if early_stopping is not None:
-            early_stopping(valid_score['avg_batch_loss'], model)
+            early_stopping(valid_score['avg_batch_loss'], model, epoch)
             if early_stopping.early_stop:
                 early_stopping_path = _add_suffix_to_basename(save_path, '_early_stopping')
                 torch.save(model.state_dict(), early_stopping_path)
-                print(f'(◕‿◕✿) Early stopping triggered at epoch {epoch + 1}. Save model to {early_stopping_path}.')
+                print(f'(◕‿◕✿) Early stopping triggered at epoch {epoch}. Save model to {early_stopping_path}.')
                 break
 
         # Save the model at specified intervals
-        if save_freq > 0 and epoch % save_freq == 0:
+        # epoch is counted from 1
+        if save_freq > 0 and (epoch-1) % save_freq == 0:
             if overwrite:
                 torch.save(model.state_dict(), save_path)
-                print(f"(◕‿◕✿) Save model to {save_path} at epoch {epoch + 1}")
+                print(f"(◕‿◕✿) Save model to {save_path} at epoch {epoch}")
             else:
-                epoch_path = _add_suffix_to_basename(save_path, f'_{epoch + 1}')
+                epoch_path = _add_suffix_to_basename(save_path, f'_{epoch}')
                 torch.save(model.state_dict(), epoch_path)
-                print(f"(◕‿◕✿) Save model to {epoch_path} at epoch {epoch + 1}")
+                print(f"(◕‿◕✿) Save model to {epoch_path} at epoch {epoch}")
 
     if writer:
         writer.close()
