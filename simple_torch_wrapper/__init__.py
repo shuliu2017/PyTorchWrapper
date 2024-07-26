@@ -1,4 +1,4 @@
-# simple_torch_wrapper/__init__.py
+# simpleTorchWrapper/simple_torch_wrapper/__init__.py
 
 from . import pytorch_tools
 from . import workflow
