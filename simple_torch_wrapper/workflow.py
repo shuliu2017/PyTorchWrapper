@@ -253,7 +253,7 @@ def train(model: torch.nn.Module,
             if early_stopping.early_stop:
                 early_stopping_path = _add_suffix_to_basename(save_path, '_early_stopping')
                 torch.save(model.state_dict(), early_stopping_path)
-                print(f'(◕‿◕✿) Early stopping triggered at epoch {epoch}. Save model to {early_stopping_path}.')
+                print(f'(◕‿◕✿) Epoch {epoch}: Early stopping triggered. Save model to {early_stopping_path}.')
                 break
 
         # Save the model at specified intervals
@@ -261,11 +261,11 @@ def train(model: torch.nn.Module,
         if save_freq > 0 and (epoch-1) % save_freq == 0:
             if overwrite:
                 torch.save(model.state_dict(), save_path)
-                print(f"(◕‿◕✿) Save model to {save_path} at epoch {epoch}")
+                print(f"(◕‿◕✿) Epoch {epoch}: Save model to {save_path}.")
             else:
                 epoch_path = _add_suffix_to_basename(save_path, f'_{epoch}')
                 torch.save(model.state_dict(), epoch_path)
-                print(f"(◕‿◕✿) Save model to {epoch_path} at epoch {epoch}")
+                print(f"(◕‿◕✿) Epoch {epoch}: Save model to {epoch_path}.")
 
     if writer:
         writer.close()
