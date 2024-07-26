@@ -174,7 +174,7 @@ class EarlyStopping:
                 self.early_stop = True
         else:
             if self.verbose:
-                print(f'(◕‿◕✿) Validation loss decreased ({self.best_loss:.6f} --> {val_loss:.6f}).  Saving model ...')
+                print(f'(◕‿◕✿) Validation loss decreased ({self.best_loss:.6f} --> {val_loss:.6f}).')
             self.best_loss = val_loss
             self.counter = 0
 
