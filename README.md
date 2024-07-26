@@ -40,8 +40,7 @@ sys.path.append('/content/pyTorchWrapper')
 ## Load Modules
 
 ```
-import packages as pk
-import customized_models as cm
+import simple_torch_wrapper as  stw
 ```
 
 ## Model Training
@@ -50,27 +49,23 @@ import customized_models as cm
 - Example
 
 ```
-# configure multiprocessing
-import torch.multiprocessing as mp
-mp.set_start_method('spawn', force=True)
+epochs = 6
 
-epochs = 1
+stw.pytorch_tools.set_random_seed(seed=0)
 
-pk.pytorch_tools.set_random_seed(seed=0)
-
-model = cm.vit_regressor.ViTRegressor()
-device = pk.pytorch_tools.get_device()
+model = stw.models.vit_regressor.ViTRegressor()
+device = stw.pytorch_tools.get_device()
 model = model.to(device)
-model = pk.pytorch_tools.enable_multi_gpu(model)
+model = stw.pytorch_tools.enable_multi_gpu(model)
 
 model_name = 'vit_regressor'
 loss_fn = torch.nn.MSELoss()
 task_type = 'regression'
 
 optimizer = torch.optim.Adam(params=model.parameters(), lr=0.001)
-early_stopping = pk.model_workflow.EarlyStopping(patience=8, path=f'{model_name}_early_stopping_checkpoint.pt')
-metrics = pk.customized_metrics.regression_metrics
-result = pk.model_workflow.train(model=model,
+early_stopping = stw.workflow.EarlyStopping(patience=8)
+metrics = stw.customized_metrics.regression_metrics
+result = stw.workflow.train(model=model,
                                   train_dataloader=train_loader,
                                   validation_dataloader=val_loader,
                                   optimizer=optimizer,
@@ -79,6 +74,7 @@ result = pk.model_workflow.train(model=model,
                                   task_type=task_type,
                                   epochs=epochs,
                                   early_stopping=early_stopping,
+                                  save_freq=2,
                                   device=device)
 ```
 
@@ -87,7 +83,7 @@ result = pk.model_workflow.train(model=model,
 ```
 loss_fn = torch.nn.MSELoss()
 task_type = 'regression'
-metrics = pk.customized_metrics.regression_metrics # MSE, MAE, R2; evaluated per epoch
+metrics = stw.customized_metrics.regression_metrics # MSE, MAE, R2; evaluated per epoch
 ```
 
 - Classification
@@ -95,7 +91,7 @@ metrics = pk.customized_metrics.regression_metrics # MSE, MAE, R2; evaluated per
 ```
 loss_fn = torch.nn.CrossEntropyLoss()
 task_type = 'classification'
-metrics = pk.customized_metrics.classification_metrics # Accuracy, Recall, Precision, F1; evaluated per epoch
+metrics = stw.customized_metrics.classification_metrics # Accuracy, Recall, Precision, F1; evaluated per epoch
 ```
 
 - Commonly used optimizers
@@ -108,9 +104,9 @@ torch.optim.SGD(params=model.parameters(), lr=0.001)
 ## Model Evaluation
 
 ```
-test_model = cm.vit_regressor.ViTRegressor().to(device)
-pk.pytorch_tools.load_model_state(test_model, target_dir='/content', model_name= f'{model_name}_early_stopping_checkpoint.pt')
-test_result = pk.model_workflow.evaluation_step(test_model, test_loader, loss_fn, metrics, task_type, device)
+test_model = stw.models.vit_regressor.ViTRegressor().to(device)
+stw.pytorch_tools.load_model_state(test_model, target_dir='/content', model_name= f'model_checkpoint.pt')
+test_result = stw.workflow.evaluation_step(test_model, test_loader, loss_fn, metrics, task_type, device)
 ```
 
 ## Example Notebooks
