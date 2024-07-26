@@ -165,16 +165,16 @@ class EarlyStopping:
         if self.best_loss is None:
             self.best_loss = val_loss
             if self.verbose:
-                print(f'    (◕‿◕✿) Epoch {epoch}: Initial Validation loss ({val_loss:.6f}).')
+                print(f'(◕‿◕✿) Epoch {epoch}: Initial Validation loss ({val_loss:.6f}).')
         elif val_loss > self.best_loss + self.delta:
             self.counter += 1
             if self.verbose:
-                print(f'    (◕‿◕✿) Epoch {epoch}: EarlyStopping counter: {self.counter} out of {self.patience}')
+                print(f'(◕‿◕✿) Epoch {epoch}: EarlyStopping counter: {self.counter} out of {self.patience}')
             if self.counter >= self.patience:
                 self.early_stop = True
         else:
             if self.verbose:
-                print(f'    (◕‿◕✿) Epoch {epoch}: Validation loss decreased ({self.best_loss:.6f} --> {val_loss:.6f}).')
+                print(f'(◕‿◕✿) Epoch {epoch}: Validation loss decreased ({self.best_loss:.6f} --> {val_loss:.6f}).')
             self.best_loss = val_loss
             self.counter = 0
 
@@ -253,7 +253,7 @@ def train(model: torch.nn.Module,
             if early_stopping.early_stop:
                 early_stopping_path = _add_suffix_to_basename(save_path, '_early_stopping')
                 torch.save(model.state_dict(), early_stopping_path)
-                print(f'(◕‿◕✿) Epoch {epoch}: Early stopping triggered. Save model to {early_stopping_path}.')
+                print(f'    (◕‿◕✿) Epoch {epoch}: Early stopping triggered. Save model to {early_stopping_path}.')
                 break
 
         # Save the model at specified intervals
@@ -261,11 +261,11 @@ def train(model: torch.nn.Module,
         if save_freq > 0 and (epoch-1) % save_freq == 0:
             if overwrite:
                 torch.save(model.state_dict(), save_path)
-                print(f"(◕‿◕✿) Epoch {epoch}: Save model to {save_path}.")
+                print(f"    (◕‿◕✿) Epoch {epoch}: Save model to {save_path}.")
             else:
                 epoch_path = _add_suffix_to_basename(save_path, f'_{epoch}')
                 torch.save(model.state_dict(), epoch_path)
-                print(f"(◕‿◕✿) Epoch {epoch}: Save model to {epoch_path}.")
+                print(f"    (◕‿◕✿) Epoch {epoch}: Save model to {epoch_path}.")
 
     if writer:
         writer.close()
