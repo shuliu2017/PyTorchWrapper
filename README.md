@@ -13,16 +13,19 @@ A general framework for PyTorch classification and regression tasks. It is light
 import os
 import sys
 
+import os
+import sys
+
 try:
-    if not os.path.isdir('/content/pyTorchWrapper'):
+    if not os.path.isdir('/content/simpleTorchWrapper'):
         raise FileNotFoundError
 except FileNotFoundError:
-    print("(◕‿◕✿) Downloading pyTorchWrapper from GitHub.")
-    os.system(f'git clone https://github.com/shuliu2017/pyTorchWrapper.git')
+    print("(◕‿◕✿) Downloading simpleTorchWrapper from GitHub.")
+    os.system(f'git clone https://github.com/shuliu2017/simpleTorchWrapper.git')
 except Exception as e:
     print(f"(◕‿◕✿) An unexpected error occurred: {e}")
 
-sys.path.append('/content/pyTorchWrapper')
+sys.path.append('/content/simpleTorchWrapper')
 ```
 
 - Install requirements
