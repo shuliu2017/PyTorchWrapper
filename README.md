@@ -41,8 +41,8 @@ sys.path.append('/content/pyTorchWrapper')
 
 ```
 # autoreload
-%load_ext autoreload
-%autoreload 2
+# %load_ext autoreload
+# %autoreload 2
 
 import simple_torch_wrapper as  stw
 ```
