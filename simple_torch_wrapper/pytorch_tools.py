@@ -152,4 +152,21 @@ def load_model_state(model: torch.nn.Module, target_dir: str, model_name: str):
     model.load_state_dict(torch.load(full_path))
 
     print(f"Model state loaded from {full_path}")
+
+def get_model_size(model: torch.nn.Module) -> float:
+    """
+    Calculate the physical size of a PyTorch model in bytes.
+
+    Args:
+        model (torch.nn.Module): The PyTorch model.
+
+    Returns:
+        float: The size of the model in megabytes.
+    """
+    total_params = 0
+    for param in model.parameters():
+        total_params += param.numel() * param.element_size()
+    model_size_mb = total_params / (1024 ** 2)  # Convert to megabytes (MB)
+    print(f"The size of the model is {model_size_mb:.2f} MB")
+    return model_size_mb
     
