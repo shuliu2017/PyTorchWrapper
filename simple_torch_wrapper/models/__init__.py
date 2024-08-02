@@ -2,4 +2,5 @@
 
 from . import transfer_learning_torchvision
 from . import vit_regressor
-__all__ = ['transfer_learning_torchvision', 'vit_regressor']
+from . import EfficientNets
+__all__ = ['transfer_learning_torchvision', 'vit_regressor', 'EfficientNets']
