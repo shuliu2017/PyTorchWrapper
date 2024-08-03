@@ -123,7 +123,7 @@ test_result = stw.workflow.evaluation_step(test_model, test_loader, loss_fn, met
 
 ## Team
 
-LYL is an independent research and development team made up of PhDs in computer science, statistics, and physics. We are dedicated to creating innovative applications and conducting cutting-edge research to simplify daily life and enhance overall well-being. With a passion for leveraging technology to develop practical solutions, we aim to make life more convenient and enjoyable.
+LYL is an independent research and development team made up of PhDs in computer science, statistics, and physics. We are dedicated to creating innovative applications and conducting cutting-edge research to simplify daily life and make life more enjoyable.
 
 ## License
 
