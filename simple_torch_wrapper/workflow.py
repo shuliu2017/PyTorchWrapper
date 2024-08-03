@@ -213,6 +213,7 @@ def train(model: torch.nn.Module,
           overwrite=True,
           device: torch.device = 'cpu',
           writer: tensorboard.writer.SummaryWriter = None
+          scheduler: Optional[torch.optim.lr_scheduler._LRScheduler] = None
           ) -> pd.DataFrame:
 
     train_scores = pd.DataFrame()
@@ -232,7 +233,8 @@ def train(model: torch.nn.Module,
                                        loss_fn=loss_fn,
                                        metrics=metrics,
                                        task_type=task_type,
-                                       device=device)
+                                       device=device,
+                                       scheduler=scheduler)
  
         if writer:
             for key in train_score.keys():
