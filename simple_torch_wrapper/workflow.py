@@ -215,6 +215,7 @@ def train(model: torch.nn.Module,
           writer: tensorboard.writer.SummaryWriter = None
           ) -> pd.DataFrame:
 
+    min_valid_loss = float('inf')
     train_scores = pd.DataFrame()
     valid_scores = pd.DataFrame()
 
@@ -262,8 +263,11 @@ def train(model: torch.nn.Module,
                 print(f'    (◕‿◕✿) Epoch {epoch}: Early stopping triggered. Save model to {early_stopping_path}.')
                 break
 
-        # Save the model at specified intervals
-        # epoch is counted from 1
+        # if save_freq > 0, save each save_freq epochs
+        # if save_freq = 0, save the best model
+        # else do not save
+        #   Save the model at specified intervals
+        #   epoch is counted from 1
         if save_freq > 0 and (epoch-1) % save_freq == 0:
             if overwrite:
                 torch.save(model.state_dict(), save_path)
@@ -272,6 +276,13 @@ def train(model: torch.nn.Module,
                 epoch_path = _add_suffix_to_basename(save_path, f'_{epoch}')
                 torch.save(model.state_dict(), epoch_path)
                 print(f"    (◕‿◕✿) Epoch {epoch}: Save model to {epoch_path}.")
+              
+        if save_freq == 0 and valid_score['avg_batch_loss'] < min_valid_loss:
+            min_valid_loss = valid_score['avg_batch_loss']
+            best_model_path = _add_suffix_to_basename(save_path, '_best_model')
+            torch.save(model.state_dict(), best_model_path)
+            print(f'    (◕‿◕✿) Epoch {epoch}: Save model to {best_model_path}')
+            
 
     if writer:
         writer.close()
