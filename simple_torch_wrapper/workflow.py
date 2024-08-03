@@ -12,7 +12,8 @@ def train_step(model: torch.nn.Module,
                optimizer: torch.optim.Optimizer,
                metrics: Optional[Dict[str, Tuple[Callable, Dict]]],
                task_type: str,
-               device: torch.device
+               device: torch.device,
+               scheduler: Optional[torch.optim.lr_scheduler._LRScheduler] = None
                ):
     """
     Performs a single training step for the given model.
@@ -32,6 +33,7 @@ def train_step(model: torch.nn.Module,
                 'precision': (precision_score, {'average': 'weighted'})}.
         task_type (str): The type of task, either 'classification' or 'regression'.
         device (torch.device): The device to perform computations on (e.g., 'cpu' or 'cuda').
+        scheduler (Optional[torch.optim.lr_scheduler._LRScheduler]): The learning rate scheduler (default: None).
         
     Returns:
         Dict: A dictionary containing the average loss, accuracy, precision, recall, and F1-score.
@@ -73,6 +75,9 @@ def train_step(model: torch.nn.Module,
     if metrics:
         for metric_name, (metric_fn, metric_params) in metrics.items():
             scores[metric_name] = metric_fn(all_targets, all_preds, **metric_params)
+
+    if scheduler is not None:
+        scheduler.step(avg_loss)
     
     return scores
 
