@@ -79,9 +79,9 @@ def train_step(model: torch.nn.Module,
 
 def evaluation_step(model: torch.nn.Module,
                     dataloader: DataLoader,
-                    scheduler: Optional[torch.optim.lr_scheduler._LRScheduler],
                     loss_fn: torch.nn.Module,
                     metrics: Optional[Dict[str, Tuple[Callable, Dict]]],
+                    scheduler: Optional[torch.optim.lr_scheduler._LRScheduler],
                     task_type: str,
                     device: torch.device
                    ):
@@ -94,13 +94,13 @@ def evaluation_step(model: torch.nn.Module,
     Args:
         model (torch.nn.Module): The model to be evaluated.
         dataloader (DataLoader): The DataLoader providing the validation data.
-        scheduler (Optional[torch.optim.lr_scheduler._LRScheduler]): The learning rate scheduler (default: None).
         loss_fn (torch.nn.Module): The loss function used to compute the loss.
         metrics (Optional[Dict[str, Tuple[Callable, dict]]]): A dictionary containing the metric names,
             functions, and parameters. The functions should accept two arguments: true labels and predictions.
             e.g. classification_metrics = {
                 'accuracy': (accuracy_score, {}),
                 'precision': (precision_score, {'average': 'weighted'})}.
+        scheduler (Optional[torch.optim.lr_scheduler._LRScheduler]): The learning rate scheduler (default: None).
         task_type (str): The type of task, either 'classification' or 'regression'.
         device (torch.device): The device to perform computations on (e.g., 'cpu' or 'cuda').
         
@@ -202,11 +202,11 @@ def train(model: torch.nn.Module,
           train_dataloader: torch.utils.data.DataLoader,
           validation_dataloader: torch.utils.data.DataLoader,
           optimizer: torch.optim.Optimizer,
-          scheduler: Optional[torch.optim.lr_scheduler._LRScheduler] = None,
           loss_fn: torch.nn.Module,
           metrics: Optional[dict],
           task_type: str,
           epochs: int,
+          scheduler: Optional[torch.optim.lr_scheduler._LRScheduler] = None,
           early_stopping: Optional[EarlyStopping] = None,
           save_freq: int = 0,
           save_path: str = 'model_checkpoint.pt',
