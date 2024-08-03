@@ -12,8 +12,7 @@ def train_step(model: torch.nn.Module,
                optimizer: torch.optim.Optimizer,
                metrics: Optional[Dict[str, Tuple[Callable, Dict]]],
                task_type: str,
-               device: torch.device,
-               scheduler: Optional[torch.optim.lr_scheduler._LRScheduler] = None
+               device: torch.device
                ):
     """
     Performs a single training step for the given model.
@@ -33,7 +32,6 @@ def train_step(model: torch.nn.Module,
                 'precision': (precision_score, {'average': 'weighted'})}.
         task_type (str): The type of task, either 'classification' or 'regression'.
         device (torch.device): The device to perform computations on (e.g., 'cpu' or 'cuda').
-        scheduler (Optional[torch.optim.lr_scheduler._LRScheduler]): The learning rate scheduler (default: None).
         
     Returns:
         Dict: A dictionary containing the average loss, accuracy, precision, recall, and F1-score.
@@ -76,14 +74,12 @@ def train_step(model: torch.nn.Module,
         for metric_name, (metric_fn, metric_params) in metrics.items():
             scores[metric_name] = metric_fn(all_targets, all_preds, **metric_params)
 
-    if scheduler is not None:
-        scheduler.step(avg_loss)
-    
     return scores
 
 
 def evaluation_step(model: torch.nn.Module,
                     dataloader: DataLoader,
+                    scheduler: Optional[torch.optim.lr_scheduler._LRScheduler],
                     loss_fn: torch.nn.Module,
                     metrics: Optional[Dict[str, Tuple[Callable, Dict]]],
                     task_type: str,
@@ -98,6 +94,7 @@ def evaluation_step(model: torch.nn.Module,
     Args:
         model (torch.nn.Module): The model to be evaluated.
         dataloader (DataLoader): The DataLoader providing the validation data.
+        scheduler (Optional[torch.optim.lr_scheduler._LRScheduler]): The learning rate scheduler (default: None).
         loss_fn (torch.nn.Module): The loss function used to compute the loss.
         metrics (Optional[Dict[str, Tuple[Callable, dict]]]): A dictionary containing the metric names,
             functions, and parameters. The functions should accept two arguments: true labels and predictions.
@@ -144,7 +141,9 @@ def evaluation_step(model: torch.nn.Module,
     if metrics:
         for metric_name, (metric_fn, metric_params) in metrics.items():
             scores[metric_name] = metric_fn(all_targets, all_preds, **metric_params)
-    
+    if scheduler is not None:
+        scheduler.step(avg_loss)
+        
     return scores
 
 class EarlyStopping:
@@ -203,6 +202,7 @@ def train(model: torch.nn.Module,
           train_dataloader: torch.utils.data.DataLoader,
           validation_dataloader: torch.utils.data.DataLoader,
           optimizer: torch.optim.Optimizer,
+          scheduler: Optional[torch.optim.lr_scheduler._LRScheduler] = None,
           loss_fn: torch.nn.Module,
           metrics: Optional[dict],
           task_type: str,
@@ -213,7 +213,6 @@ def train(model: torch.nn.Module,
           overwrite=True,
           device: torch.device = 'cpu',
           writer: tensorboard.writer.SummaryWriter = None
-          scheduler: Optional[torch.optim.lr_scheduler._LRScheduler] = None
           ) -> pd.DataFrame:
 
     train_scores = pd.DataFrame()
@@ -230,11 +229,11 @@ def train(model: torch.nn.Module,
       
         valid_score = evaluation_step(model=model,
                                        dataloader=validation_dataloader,
+                                       scheduler=scheduler,
                                        loss_fn=loss_fn,
                                        metrics=metrics,
                                        task_type=task_type,
-                                       device=device,
-                                       scheduler=scheduler)
+                                       device=device)
  
         if writer:
             for key in train_score.keys():
