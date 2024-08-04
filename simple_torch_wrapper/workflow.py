@@ -208,8 +208,8 @@ def train(model: torch.nn.Module,
           epochs: int,
           scheduler: Optional[torch.optim.lr_scheduler._LRScheduler] = None,
           early_stopping: Optional[EarlyStopping] = None,
-          save_freq: int = 0,
           save_path: str = 'model_checkpoint.pt',
+          save_freq: int = 0,
           overwrite=True,
           device: torch.device = 'cpu',
           writer: tensorboard.writer.SummaryWriter = None
@@ -277,11 +277,11 @@ def train(model: torch.nn.Module,
                 torch.save(model.state_dict(), epoch_path)
                 print(f"    (◕‿◕✿) Epoch {epoch}: Save model to {epoch_path}.")
               
-        if save_freq == 0 and valid_score['avg_batch_loss'] < min_valid_loss:
+        if  valid_score['avg_batch_loss'] < min_valid_loss:
             min_valid_loss = valid_score['avg_batch_loss']
             best_model_path = _add_suffix_to_basename(save_path, '_best_model')
             torch.save(model.state_dict(), best_model_path)
-            print(f'    (◕‿◕✿) Epoch {epoch}: Save model to {best_model_path}')
+            print(f'    (◕‿◕✿) Epoch {epoch}: Update best mode. Save best model to {best_model_path}')
             
 
     if writer:
