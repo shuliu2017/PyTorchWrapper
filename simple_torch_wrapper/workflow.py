@@ -54,8 +54,8 @@ def train_step(model: torch.nn.Module,
             loss = loss_fn(outputs, targets)
             preds = torch.argmax(outputs, dim=1).cpu().numpy()
         elif task_type == 'regression':
-            outputs = outputs.squeeze()
-            loss = loss_fn(outputs, targets)
+            outputs = outputs.view(-1)
+            loss = loss_fn(outputs, targets.view(-1))
             preds = outputs.detach().cpu().numpy()
         else:
             raise ValueError("(◕‿◕✿) task_type must be either 'classification' or 'regression'")
@@ -64,7 +64,7 @@ def train_step(model: torch.nn.Module,
         optimizer.step()
         train_loss += loss.item()
       
-        all_targets.extend(targets.cpu().numpy())
+        all_targets.extend(targets.view(-1).cpu().numpy())
         all_preds.extend(preds)
     
     avg_loss = train_loss / num_batches
@@ -125,14 +125,14 @@ def evaluation_step(model: torch.nn.Module,
                 loss = loss_fn(outputs, targets)
                 preds = torch.argmax(outputs, dim=1).cpu().numpy()
             elif task_type == 'regression':
-                outputs = outputs.squeeze()
-                loss = loss_fn(outputs, targets)
+                outputs = outputs.view(-1)
+                loss = loss_fn(outputs, targets.view(-1))
                 preds = outputs.detach().cpu().numpy()
             else:
                 raise ValueError("(◕‿◕✿) task_type must be either 'classification' or 'regression'")
             
             val_loss += loss.item()
-            all_targets.extend(targets.cpu().numpy())
+            all_targets.extend(targets.view(-1).cpu().numpy())
             all_preds.extend(preds)
     
     avg_loss = val_loss / num_batches
