@@ -118,7 +118,7 @@ test_result = stw.workflow.evaluation_step(test_model, test_loader, loss_fn, met
 
 ## Example Notebooks
 
-- regression [![Open In Colab](simple regression on random noise)](https://github.com/shuliu2017/pyTorchWrapper/blob/main/notebooks/simple_regression.ipynb)
+- regression [![Open In Colab](simple regression on random noise)](https://colab.research.google.com/github/shuliu2017/pyTorchWrapper/blob/main/notebooks/simple_regression.ipynb)
 
 
 ## Team
