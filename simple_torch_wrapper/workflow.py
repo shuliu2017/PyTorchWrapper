@@ -209,6 +209,7 @@ def train(model: torch.nn.Module,
           scheduler: Optional[torch.optim.lr_scheduler._LRScheduler] = None,
           early_stopping: Optional[EarlyStopping] = None,
           save_path: str = 'model_checkpoint.pt',
+          save_best_model = True,
           save_freq: int = 0,
           overwrite=True,
           device: torch.device = 'cpu',
@@ -263,9 +264,7 @@ def train(model: torch.nn.Module,
                 print(f'    (◕‿◕✿) Epoch {epoch}: Early stopping triggered. Save model to {early_stopping_path}.')
                 break
 
-        # if save_freq > 0, save each save_freq epochs
-        # if save_freq = 0, save the best model
-        # else do not save
+
         #   Save the model at specified intervals
         #   epoch is counted from 1
         if save_freq > 0 and (epoch-1) % save_freq == 0:
@@ -277,7 +276,7 @@ def train(model: torch.nn.Module,
                 torch.save(model.state_dict(), epoch_path)
                 print(f"    (◕‿◕✿) Epoch {epoch}: Save model to {epoch_path}.")
               
-        if  valid_score['avg_batch_loss'] < min_valid_loss:
+        if  save_best_model and valid_score['avg_batch_loss'] < min_valid_loss:
             min_valid_loss = valid_score['avg_batch_loss']
             best_model_path = _add_suffix_to_basename(save_path, '_best_model')
             torch.save(model.state_dict(), best_model_path)
