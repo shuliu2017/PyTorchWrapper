@@ -144,7 +144,7 @@ def evaluation_step(model: torch.nn.Module,
     if scheduler is not None:
         scheduler.step(avg_loss)
         
-    return scores
+    return scores, all_targets, all_preds
 
 class EarlyStopping:
     def __init__(self, patience=8, verbose=True, delta=0):
@@ -221,20 +221,20 @@ def train(model: torch.nn.Module,
 
     for epoch in tqdm(range(1, epochs+1)):
         train_score = train_step(model=model,
-                                        dataloader=train_dataloader,
-                                        loss_fn=loss_fn,
-                                        optimizer=optimizer,
-                                        metrics=metrics,
-                                        task_type=task_type,
-                                        device=device)
-      
-        valid_score = evaluation_step(model=model,
-                                       dataloader=validation_dataloader,
-                                       scheduler=scheduler,
+                                       dataloader=train_dataloader,
                                        loss_fn=loss_fn,
+                                       optimizer=optimizer,
                                        metrics=metrics,
                                        task_type=task_type,
                                        device=device)
+      
+        valid_score, _, _ = evaluation_step(model=model,
+                                            dataloader=validation_dataloader,
+                                            scheduler=scheduler,
+                                            loss_fn=loss_fn,
+                                            metrics=metrics,
+                                            task_type=task_type,
+                                            device=device)
  
         if writer:
             for key in train_score.keys():
